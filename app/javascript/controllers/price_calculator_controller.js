@@ -5,7 +5,7 @@ export default class extends Controller {
     "formTemplate", "productSelect", "quantityInput", "totalPrice", "itemTotal", 
     "searchInput", "categoryCheckboxes", "categoryCheckbox", "productList",
     "minPriceInput", "maxPriceInput", "stockFilter", "sortSelect", 
-    "resultCount", "advancedToggle"
+    "resultCount", "advancedToggle", "selectedProductInfo", "selectedProductName"
   ]
 
   connect() {
@@ -56,6 +56,15 @@ export default class extends Controller {
     firstForm.querySelector("[data-price-calculator-target='productSelect']").value = ""
     firstForm.querySelector("[data-price-calculator-target='quantityInput']").value = "1"
     firstForm.querySelector("[data-price-calculator-target='itemTotal']").textContent = "0"
+    
+    // 商品選択情報をリセット
+    const selectedProductInfo = firstForm.querySelector("[data-price-calculator-target='selectedProductInfo']")
+    const stockInfo = firstForm.querySelector("[data-stock-info]")
+    const categoryInfo = firstForm.querySelector("[data-category-info]")
+    
+    if (selectedProductInfo) selectedProductInfo.style.display = 'none'
+    if (stockInfo) stockInfo.textContent = '-'
+    if (categoryInfo) categoryInfo.textContent = '-'
 
     // 合計金額をリセット
     this.totalPriceTarget.textContent = "0"
@@ -115,6 +124,7 @@ export default class extends Controller {
 
   selectProduct(event) {
     const button = event.target
+    const productName = button.getAttribute("data-product-name")
     const productPrice = button.getAttribute("data-product-price")
     const productStock = button.getAttribute("data-product-stock")
     const productCategory = button.getAttribute("data-product-category")
@@ -123,11 +133,22 @@ export default class extends Controller {
     const productSelect = this.currentFormGroup.querySelector("[data-price-calculator-target='productSelect']")
     const stockInfo = this.currentFormGroup.querySelector("[data-stock-info]")
     const categoryInfo = this.currentFormGroup.querySelector("[data-category-info]")
+    const productNameInfo = this.currentFormGroup.querySelector("[data-product-name]")
     const quantityInput = this.currentFormGroup.querySelector("[data-price-calculator-target='quantityInput']")
+    const selectedProductInfo = this.currentFormGroup.querySelector("[data-price-calculator-target='selectedProductInfo']")
+    const selectedProductName = this.currentFormGroup.querySelector("[data-price-calculator-target='selectedProductName']")
 
+    // 商品情報を設定
     productSelect.value = productPrice
     stockInfo.textContent = productStock
     categoryInfo.textContent = productCategory
+    if (productNameInfo) productNameInfo.textContent = productName
+    
+    // 商品名を表示し、選択情報エリアを表示
+    if (selectedProductName && selectedProductInfo) {
+      selectedProductName.textContent = productName
+      selectedProductInfo.style.display = 'block'
+    }
 
     // モーダルを閉じる
     const modal = bootstrap.Modal.getInstance(document.getElementById("productModal"))
@@ -136,8 +157,10 @@ export default class extends Controller {
     // 小計を更新
     this.updateItemTotal(this.currentFormGroup)
 
-    // フォーム内の数量変更時に再計算するイベントリスナーを追加
-    quantityInput.addEventListener("change", () => this.updateItemTotal(this.currentFormGroup))
+    // フォーム内の数量変更時に再計算するイベントリスナーを追加（重複防止）
+    quantityInput.removeEventListener("change", this.quantityChangeHandler)
+    this.quantityChangeHandler = () => this.updateItemTotal(this.currentFormGroup)
+    quantityInput.addEventListener("change", this.quantityChangeHandler)
 
     // 合計金額を再計算
     this.updateTotalPrice()

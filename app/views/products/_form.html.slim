@@ -15,10 +15,6 @@
       = f.text_area :description, class: "form-control", rows: 3, placeholder: "商品の説明を入力"
 
     .col-12.col-md-6
-      = f.label :stock_quantity, "在庫数", class: "form-label fw-bold"
-      = f.number_field :stock_quantity, min: 0, class: "form-control", placeholder: "在庫数を入力"
-
-    .col-12.col-md-6
       = f.label :category_id, "カテゴリ", class: "form-label fw-bold"
       = f.collection_select :category_id, current_user.categories, :id, :name, { prompt: "カテゴリを選択してください" }, class: "form-select"
 

@@ -1,4 +1,4 @@
-h1.text-center.mb-5 商品金額計算
+h1.text-center.my-5 商品金額計算
 
 .container.mt-5(data-controller="price-calculator")
   .row.mb-4.d-flex.justify-content-end
@@ -23,6 +23,10 @@ h1.text-center.mb-5 商品金額計算
 
   #forms-container(data-price-calculator-target="formsContainer")
     .form-group.border.rounded.p-4.mb-4.shadow-sm.bg-light.d-none(data-price-calculator-target="formTemplate")
+      .row
+        .col-12
+          h1.text-center.text-primary.mb-3
+            span(data-product-name) 商品名未選択
       .row.g-3.align-items-end
         .col-md-4
           label.form-label.fw-bold.text-primary
@@ -53,12 +57,17 @@ h1.text-center.mb-5 商品金額計算
             i.fas.fa-trash.me-1
             | 削除
       .row.mt-3.pt-2.border-top.border-secondary
-        .col-md-6
+        .col-md-4
+          .d-flex.align-items-center.gap-2
+            i.fas.fa-info-circle.text-primary
+            span.text-muted.fw-bold 商品名:
+            span.badge.text-dark(data-product-name) -
+        .col-md-4
           .d-flex.align-items-center.gap-2
             i.fas.fa-boxes.text-warning
             span.text-muted.fw-bold 在庫:
             span.badge.bg-info(data-stock-info) -
-        .col-md-6
+        .col-md-4
           .d-flex.align-items-center.gap-2
             i.fas.fa-tags.text-secondary
             span.text-muted.fw-bold カテゴリ:
@@ -66,7 +75,7 @@ h1.text-center.mb-5 商品金額計算
 
   / モーダル
   .modal.fade#productModal(tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true")
-    .modal-dialog.modal-xl.modal-dialog-scrollable
+    .modal-dialog.modal-xl.modal-dialog-scrollable.modal-fullscreen-lg-down
       .modal-content
         .modal-header.bg-primary.text-white
           h5.modal-title#productModalLabel
@@ -76,20 +85,22 @@ h1.text-center.mb-5 商品金額計算
         .modal-body
           / 基本検索エリア
           .mb-3
-            .row.g-3
-              .col-md-8
+            .row.g-2
+              .col-12.col-md-8
                 .input-group
                   span.input-group-text
                     i.fas.fa-search
                   input.form-control.form-control-lg(type="text" placeholder="商品名や説明文で検索..." data-action="input->price-calculator#filterProducts" data-price-calculator-target="searchInput")
-              .col-md-4
+              .col-12.col-md-4
                 .d-flex.gap-2.h-100
                   button.btn.btn-outline-secondary.flex-fill(type="button" data-action="click->price-calculator#clearFilters")
-                    i.fas.fa-undo.me-1
-                    | クリア
+                    i.fas.fa-undo.me-1.d-none.d-sm-inline
+                    span.d-none.d-sm-inline クリア
+                    i.fas.fa-undo.d-sm-none(title="クリア")
                   button.btn.btn-outline-primary.flex-fill(type="button" data-bs-toggle="collapse" data-bs-target="#advancedSearch" aria-expanded="false" aria-controls="advancedSearch" data-price-calculator-target="advancedToggle")
-                    i.fas.fa-cog.me-1
-                    | 詳細
+                    i.fas.fa-cog.me-1.d-none.d-sm-inline
+                    span.d-none.d-sm-inline 詳細
+                    i.fas.fa-cog.d-sm-none(title="詳細検索")
 
           / 詳細検索エリア（折りたたみ）
           .collapse#advancedSearch
@@ -100,25 +111,7 @@ h1.text-center.mb-5 商品金額計算
                   | 詳細検索・絞り込み
               .card-body.py-3
                 .row.g-3.mb-3
-                  .col-md-6
-                    label.form-label.fw-bold
-                      i.fas.fa-yen-sign.me-1.text-success
-                      | 価格範囲
-                    .input-group
-                      input.form-control(type="number" min="0" placeholder="最小価格" data-action="input->price-calculator#filterProducts" data-price-calculator-target="minPriceInput")
-                      span.input-group-text 〜
-                      input.form-control(type="number" min="0" placeholder="最大価格" data-action="input->price-calculator#filterProducts" data-price-calculator-target="maxPriceInput")
-                      span.input-group-text 円
-                  .col-md-3
-                    label.form-label.fw-bold
-                      i.fas.fa-boxes.me-1.text-warning
-                      | 在庫状況
-                    select.form-select(data-action="change->price-calculator#filterProducts" data-price-calculator-target="stockFilter")
-                      option(value="all") 全ての商品
-                      option(value="in_stock") 在庫あり（1個以上）
-                      option(value="low_stock") 在庫少（10個以下）
-                      option(value="out_of_stock") 在庫なし
-                  .col-md-3
+                  .col-12.col-md-3
                     label.form-label.fw-bold
                       i.fas.fa-sort.me-1.text-info
                       | 並び替え
@@ -129,7 +122,6 @@ h1.text-center.mb-5 商品金額計算
                       option(value="price_desc") 価格（高い順）
                       option(value="stock_asc") 在庫数（少ない順）
                       option(value="stock_desc") 在庫数（多い順）
-                
                 .row
                   .col-12
                     label.form-label.fw-bold.mb-2
@@ -148,38 +140,32 @@ h1.text-center.mb-5 商品金額計算
                               label.form-check-label(for="category_#{category.id}")
                                 span.badge.bg-secondary = category.name
           / 検索結果表示エリア
-          .d-flex.justify-content-between.align-items-center.mb-3.px-2.py-2.bg-light.rounded
-            .d-flex.align-items-center.gap-3
+          .d-flex.flex-column.flex-sm-row.justify-content-between.align-items-start.align-items-sm-center.mb-3.px-2.py-2.bg-light.rounded.gap-2
+            .d-flex.align-items-center.gap-2
               .text-muted
                 i.fas.fa-list.me-1
                 small 検索結果:
               .badge.bg-primary.fs-6(data-price-calculator-target="resultCount") #{@products.count}
               small.text-muted 件
-            .text-muted
+            .text-muted.d-none.d-sm-block
               small 
                 i.fas.fa-database.me-1
                 | 全商品数: #{@products.count}件
-          .table-responsive.border.rounded(style="max-height: 450px; overflow-y: auto;")
+          .table-responsive.border.rounded(style="max-height: 500px; overflow-y: auto;")
             table.table.table-hover.table-sm.mb-0
               thead.table-dark.sticky-top
                 tr
-                  th.text-center(style="width: 30%")
+                  th.text-center(style="width: 50%")
                     i.fas.fa-box.me-1
-                    | 商品情報
-                  th.text-center(style="width: 12%")
+                    | 商品
+                  th.text-center(style="width: 20%")
                     i.fas.fa-yen-sign.me-1
                     | 価格
-                  th.text-center(style="width: 12%")
+                  th.text-center(style="width: 15%")
                     i.fas.fa-boxes.me-1
                     | 在庫
                   th.text-center(style="width: 15%")
-                    i.fas.fa-tags.me-1
-                    | カテゴリ
-                  th.text-center(style="width: 21%")
-                    i.fas.fa-info-circle.me-1
-                    | 説明
-                  th.text-center(style="width: 10%")
-                    i.fas.fa-mouse-pointer.me-1
+                    i.fas.fa-plus.me-1
                     | 選択
               tbody(data-price-calculator-target="productList")
                 - @products.each do |product|
@@ -191,33 +177,31 @@ h1.text-center.mb-5 商品金額計算
                     data-description=(product.description || "")
                     class="product-row"
                   )
-                    td.px-3.py-2
+                    td.px-2.py-2
                       .d-flex.flex-column
                         strong.text-primary(data-highlight-target="name") = product.name
-                        small.text-muted
+                        small.text-muted.d-none.d-sm-block
                           i.fas.fa-barcode.me-1
                           | ID: #{product.id}
+                        small.text-muted.d-sm-none
+                          span.badge.bg-secondary.me-1 = product.category&.name || "未分類"
                     td.text-center
-                      .fw-bold.text-success.fs-6 = "¥#{product.price.to_i.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
+                      .fw-bold.text-success = "¥#{product.price.to_i.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
                     td.text-center
                       - if product.stock_quantity > 10
                         span.badge.bg-success.px-2.py-1
-                          i.fas.fa-check-circle.me-1
+                          i.fas.fa-check-circle.me-1.d-none.d-sm-inline
                           = product.stock_quantity
                       - elsif product.stock_quantity > 0
                         span.badge.bg-warning.text-dark.px-2.py-1
-                          i.fas.fa-exclamation-triangle.me-1
+                          i.fas.fa-exclamation-triangle.me-1.d-none.d-sm-inline
                           = product.stock_quantity
                       - else
                         span.badge.bg-danger.px-2.py-1
-                          i.fas.fa-times-circle.me-1
+                          i.fas.fa-times-circle.me-1.d-none.d-sm-inline
                           = product.stock_quantity
                     td.text-center
-                      span.badge.bg-secondary.px-2.py-1 = product.category&.name || "未分類"
-                    td.px-2
-                      small.text-muted(data-highlight-target="description") = truncate(product.description || "説明なし", length: 35)
-                    td.text-center
-                      button.btn.btn-primary.btn-sm.px-3(
+                      button.btn.btn-primary.btn-sm.w-100(
                         type="button"
                         data-action="click->price-calculator#selectProduct"
                         data-product-name=product.name
@@ -226,5 +210,6 @@ h1.text-center.mb-5 商品金額計算
                         data-product-category=(product.category&.name || "未分類")
                         data-product-description=(product.description || "")
                       )
-                        i.fas.fa-plus.me-1
-                        | 選択
+                        i.fas.fa-plus.me-1.d-none.d-sm-inline
+                        span.d-none.d-sm-inline 選択
+                        i.fas.fa-plus.d-sm-none
