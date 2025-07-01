@@ -4,8 +4,7 @@ export default class extends Controller {
   static targets = [
     "formTemplate", "productSelect", "quantityInput", "totalPrice", "itemTotal", 
     "searchInput", "categoryCheckboxes", "categoryCheckbox", "productList",
-    "minPriceInput", "maxPriceInput", "stockFilter", "sortSelect", 
-    "resultCount", "advancedToggle", "selectedProductInfo", "selectedProductName"
+    "sortSelect", "resultCount", "advancedToggle", "selectedProductInfo", "selectedProductName"
   ]
 
   connect() {
@@ -168,9 +167,6 @@ export default class extends Controller {
 
   filterProducts() {
     const searchQuery = this.searchInputTarget.value.toLowerCase()
-    const minPrice = parseFloat(this.minPriceInputTarget.value) || 0
-    const maxPrice = parseFloat(this.maxPriceInputTarget.value) || Infinity
-    const stockFilter = this.stockFilterTarget.value
     
     // 選択されたカテゴリを取得（複数選択対応）
     const selectedCategories = []
@@ -192,30 +188,9 @@ export default class extends Controller {
       const productName = row.getAttribute("data-name").toLowerCase()
       const productDescription = row.getAttribute("data-description").toLowerCase()
       const productCategory = row.getAttribute("data-category")
-      const productPrice = parseFloat(row.getAttribute("data-price"))
-      const productStock = parseInt(row.getAttribute("data-stock"))
 
       // テキスト検索（商品名と説明文）
       const matchesSearch = productName.includes(searchQuery) || productDescription.includes(searchQuery)
-      
-      // 価格範囲フィルタ
-      const matchesPrice = productPrice >= minPrice && productPrice <= maxPrice
-      
-      // 在庫フィルタ
-      let matchesStock = true
-      switch (stockFilter) {
-        case 'in_stock':
-          matchesStock = productStock > 0
-          break
-        case 'low_stock':
-          matchesStock = productStock <= 10 && productStock > 0
-          break
-        case 'out_of_stock':
-          matchesStock = productStock === 0
-          break
-        default:
-          matchesStock = true
-      }
       
       // カテゴリフィルタリング
       let matchesCategory = false
@@ -225,7 +200,7 @@ export default class extends Controller {
         matchesCategory = selectedCategories.includes(productCategory)
       }
 
-      if (matchesSearch && matchesCategory && matchesPrice && matchesStock) {
+      if (matchesSearch && matchesCategory) {
         row.style.display = ""
         visibleCount++
         this.highlightText(row, searchQuery)
@@ -273,9 +248,6 @@ export default class extends Controller {
 
   clearFilters() {
     this.searchInputTarget.value = ''
-    this.minPriceInputTarget.value = ''
-    this.maxPriceInputTarget.value = ''
-    this.stockFilterTarget.value = 'all'
     this.sortSelectTarget.value = 'name_asc'
     
     // 全てのカテゴリチェックボックスをクリア
