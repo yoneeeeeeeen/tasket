@@ -11,15 +11,16 @@ h1.text-center.my-5 商品金額計算
         i.fas.fa-undo.me-2
         | リセット
 
-  .row.mt-4
+  .row.my-4
     .col-md-12.text-center
       .card.border-success.shadow-sm
         .card-body.py-4
           h4.fw-bold.text-success.mb-2
             i.fas.fa-calculator.me-2
             | 合計金額
-          .fs-1.fw-bold.text-success(data-price-calculator-target="totalPrice") 0
-          span.fs-4.text-success 円
+          .d-flex.align-items-center.justify-content-center.gap-2
+            .fs-1.fw-bold.text-success(data-price-calculator-target="totalPrice") 0
+            span.fs-4.text-success 円
 
   #forms-container(data-price-calculator-target="formsContainer")
     .form-group.border.rounded.p-4.mb-4.shadow-sm.bg-light.d-none(data-price-calculator-target="formTemplate")
@@ -27,41 +28,36 @@ h1.text-center.my-5 商品金額計算
         .col-12
           h1.text-center.text-primary.mb-3
             span(data-product-name) 商品名未選択
-      .row.g-3.align-items-end
-        .col-md-4
+      .row.g-3.align-items-end.mb-4
+        .col-md-6
           label.form-label.fw-bold.text-primary
-            i.fas.fa-box.me-1
+            i.fas.fa-box.me-2
             | 商品を選択
-          button.btn.btn-outline-primary.w-100.shadow-sm(type="button" data-action="click->price-calculator#openProductModal")
+          button.btn.btn-outline-primary.w-100.shadow-sm.p-3(type="button" data-action="click->price-calculator#openProductModal")
             i.fas.fa-search.me-2
             | 商品を選択
           input(type="hidden" data-price-calculator-target="productSelect")
-        .col-md-3
+        .col-md-6
           label.form-label.fw-bold.text-warning
             i.fas.fa-sort-numeric-up.me-1
             | 数量を入力
-          input.form-control.form-control-lg.shadow-sm(type="number" min="1" value="1" data-price-calculator-target="quantityInput")
-        .col-md-3
+          input.form-control.form-control-lg.shadow-sm.p-3(type="number" min="1" value="1" data-price-calculator-target="quantityInput")
+      .row
+        .col-md-10
           label.form-label.fw-bold.text-success
             i.fas.fa-calculator.me-1
             | 小計
           .card.bg-success.text-white.shadow-sm
             .card-body.text-center.py-2
-              .fs-5.fw-bold(data-price-calculator-target="itemTotal") 0
-              small 円
-        .col-md-2.text-end
+              .d-flex.align-items-center.justify-content-center.gap-2
+                .fs-2.fw-bold(data-price-calculator-target="itemTotal") 0
+                small.fs-4 円
+        .col-md-2
           label.form-label.fw-bold.text-danger
-            i.fas.fa-trash.me-1
             | 削除
-          button.btn.btn-danger.w-100.shadow-sm(type="button" data-action="click->price-calculator#removeForm")
-            i.fas.fa-trash.me-1
-            | 削除
+          button.btn.btn-danger.w-100.shadow-sm.p-auto(type="button" data-action="click->price-calculator#removeForm")
+            i.fas.fa-trash.m-2.fa-2x
       .row.mt-3.pt-2.border-top.border-secondary
-        .col-md-4
-          .d-flex.align-items-center.gap-2
-            i.fas.fa-info-circle.text-primary
-            span.text-muted.fw-bold 商品名:
-            span.badge.text-dark(data-product-name) -
         .col-md-4
           .d-flex.align-items-center.gap-2
             i.fas.fa-boxes.text-warning
