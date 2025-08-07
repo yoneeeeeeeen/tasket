@@ -11,8 +11,16 @@ export default class extends Controller {
     this.addChangeListeners()
     this.updateTotalPrice()
     this.setupCategoryFilters()
-    this.allProducts = this.getAllProducts() // 全商品データを保存
-    this.updateResultCount()
+    this.setupModalFocusManagement()
+    
+    // 全商品データの取得（エラーハンドリング付き）
+    try {
+      this.allProducts = this.getAllProducts()
+      this.updateResultCount()
+    } catch (error) {
+      console.error('Error getting all products:', error)
+      this.allProducts = []
+    }
   }
 
   addForm() {
@@ -20,9 +28,26 @@ export default class extends Controller {
     template.classList.remove("d-none") // 非表示クラスを削除
     this.element.querySelector("#forms-container").appendChild(template)
 
+    // itemTotal要素がなければ追加
+    let itemTotal = template.querySelector("[data-price-calculator-target='itemTotal']")
+    if (!itemTotal) {
+      itemTotal = document.createElement('span')
+      itemTotal.setAttribute('data-price-calculator-target', 'itemTotal')
+      itemTotal.textContent = "0"
+      // 適切な場所に追加（例: quantityInputの後）
+      const quantityInput = template.querySelector("[data-price-calculator-target='quantityInput']")
+      if (quantityInput && quantityInput.parentNode) {
+        quantityInput.parentNode.appendChild(itemTotal)
+      } else {
+        template.appendChild(itemTotal)
+      }
+    }
+
     // 新しいフォーム内の要素にイベントリスナーを追加
     const quantityInput = template.querySelector("[data-price-calculator-target='quantityInput']")
-    quantityInput.addEventListener("change", () => this.updateItemTotal(template))
+    if (quantityInput) {
+      quantityInput.addEventListener("change", () => this.updateItemTotal(template))
+    }
 
     // 合計金額を再計算
     this.updateTotalPrice()
@@ -70,9 +95,33 @@ export default class extends Controller {
   }
 
   updateItemTotal(formGroup) {
+    // formGroupの存在確認
+    if (!formGroup) {
+      console.error('formGroup is null or undefined')
+      return
+    }
+
     const select = formGroup.querySelector("[data-price-calculator-target='productSelect']")
     const input = formGroup.querySelector("[data-price-calculator-target='quantityInput']")
-    const itemTotal = formGroup.querySelector("[data-price-calculator-target='itemTotal']")
+    let itemTotal = formGroup.querySelector("[data-price-calculator-target='itemTotal']")
+
+    // 必要な要素の存在確認
+    if (!select || !input) {
+      console.error('Required elements not found:', { select, input, itemTotal })
+      return
+    }
+    // itemTotalがなければ自動生成
+    if (!itemTotal) {
+      itemTotal = document.createElement('span')
+      itemTotal.setAttribute('data-price-calculator-target', 'itemTotal')
+      itemTotal.textContent = "0"
+      // quantityInputの後ろに追加
+      if (input && input.parentNode) {
+        input.parentNode.appendChild(itemTotal)
+      } else {
+        formGroup.appendChild(itemTotal)
+      }
+    }
 
     // 商品の価格を取得
     const price = parseFloat(select.value) || 0
@@ -88,13 +137,22 @@ export default class extends Controller {
     const stockInfo = formGroup.querySelector("[data-stock-info]")
     const categoryInfo = formGroup.querySelector("[data-category-info]")
 
-    const selectedOption = select.options[select.selectedIndex]
-    const stock = selectedOption?.getAttribute("data-stock") || "不明"
-    const category = selectedOption?.getAttribute("data-category") || "不明"
+    // 在庫・カテゴリ情報の存在確認
+    if (stockInfo && categoryInfo) {
+      let selectedOption = null;
+      if (select.tagName === 'SELECT' && select.options && typeof select.selectedIndex === 'number' && select.selectedIndex >= 0) {
+        selectedOption = select.options[select.selectedIndex] || null;
+      }
+      const stock = selectedOption && typeof selectedOption.getAttribute === 'function'
+        ? selectedOption.getAttribute("data-stock")
+        : select.getAttribute("data-stock") || "不明";
+      const category = selectedOption && typeof selectedOption.getAttribute === 'function'
+        ? selectedOption.getAttribute("data-category")
+        : select.getAttribute("data-category") || "不明";
 
-    if (stockInfo) stockInfo.textContent = stock
-    if (categoryInfo) categoryInfo.textContent = category
-
+      stockInfo.textContent = stock
+      categoryInfo.textContent = category
+    }
   }
 
   updateTotalPrice() {
@@ -118,15 +176,41 @@ export default class extends Controller {
   openProductModal(event) {
     this.currentFormGroup = event.target.closest(".form-group")
     const modal = new bootstrap.Modal(document.getElementById("productModal"))
+    const modalElement = document.getElementById("productModal")
+    
+    // モーダルが完全に開かれた後に検索フィールドにフォーカス
+    modalElement.addEventListener('shown.bs.modal', () => {
+      const searchInput = this.searchInputTarget
+      if (searchInput) {
+        searchInput.focus()
+      }
+    }, { once: true })
+    
     modal.show()
   }
 
   selectProduct(event) {
-    const button = event.target
+    const button = event.currentTarget;
+    const formGroup = button.closest('.form-group');
+    
+    // formGroupの存在確認とcurrentFormGroupの設定
+    if (formGroup) {
+      this.currentFormGroup = formGroup;
+    } else if (!this.currentFormGroup) {
+      console.error('No form group found and no current form group set')
+      return
+    }
+
     const productName = button.getAttribute("data-product-name")
     const productPrice = button.getAttribute("data-product-price")
     const productStock = button.getAttribute("data-product-stock")
     const productCategory = button.getAttribute("data-product-category")
+
+    // 商品情報の存在確認
+    if (!productName || !productPrice) {
+      console.error('Required product data missing:', { productName, productPrice })
+      return
+    }
 
     // 現在のフォームに選択した商品情報を反映
     const productSelect = this.currentFormGroup.querySelector("[data-price-calculator-target='productSelect']")
@@ -137,10 +221,19 @@ export default class extends Controller {
     const selectedProductInfo = this.currentFormGroup.querySelector("[data-price-calculator-target='selectedProductInfo']")
     const selectedProductName = this.currentFormGroup.querySelector("[data-price-calculator-target='selectedProductName']")
 
+    // 必要な要素の存在確認
+    if (!productSelect || !quantityInput) {
+      console.error('Required form elements not found:', { productSelect, quantityInput })
+      return
+    }
+
     // 商品情報を設定
     productSelect.value = productPrice
-    stockInfo.textContent = productStock
-    categoryInfo.textContent = productCategory
+    productSelect.setAttribute("data-stock", productStock || "0")
+    productSelect.setAttribute("data-category", productCategory || "未分類")
+    
+    if (stockInfo) stockInfo.textContent = productStock || "不明"
+    if (categoryInfo) categoryInfo.textContent = productCategory || "未分類"
     if (productNameInfo) productNameInfo.textContent = productName
     
     // 商品名を表示し、選択情報エリアを表示
@@ -149,20 +242,48 @@ export default class extends Controller {
       selectedProductInfo.style.display = 'block'
     }
 
-    // モーダルを閉じる
-    const modal = bootstrap.Modal.getInstance(document.getElementById("productModal"))
+    // ボタンからフォーカスを外してからモーダルを閉じる
+    button.blur()
+    
+    // モーダルインスタンスの取得
+    const modalElement = document.getElementById("productModal")
+    const modal = bootstrap.Modal.getInstance(modalElement)
+    
+    if (!modal) {
+      console.error('Modal instance not found')
+      return
+    }
+    
+    // 即座に小計を更新（モーダル閉鎖前）
+    this.updateItemTotal(this.currentFormGroup)
+    
+    // モーダルが完全に閉じられた後の処理
+    const handleModalHidden = (event) => {
+      // イベントリスナーを削除（重複防止）
+      modalElement.removeEventListener('hidden.bs.modal', handleModalHidden)
+      
+      // フォーカスを適切な要素に戻す（数量入力フィールド）
+      const currentQuantityInput = this.currentFormGroup.querySelector("[data-price-calculator-target='quantityInput']")
+      if (currentQuantityInput) {
+        setTimeout(() => {
+          currentQuantityInput.focus()
+          currentQuantityInput.select()
+        }, 100) // モーダル閉鎖アニメーション完了後にフォーカス
+      }
+      
+      // 合計金額を再計算
+      this.updateTotalPrice()
+    }
+    
+    modalElement.addEventListener('hidden.bs.modal', handleModalHidden)
     modal.hide()
 
-    // 小計を更新
-    this.updateItemTotal(this.currentFormGroup)
-
     // フォーム内の数量変更時に再計算するイベントリスナーを追加（重複防止）
-    quantityInput.removeEventListener("change", this.quantityChangeHandler)
+    if (this.quantityChangeHandler) {
+      quantityInput.removeEventListener("change", this.quantityChangeHandler)
+    }
     this.quantityChangeHandler = () => this.updateItemTotal(this.currentFormGroup)
     quantityInput.addEventListener("change", this.quantityChangeHandler)
-
-    // 合計金額を再計算
-    this.updateTotalPrice()
   }
 
   filterProducts() {
@@ -303,12 +424,17 @@ export default class extends Controller {
   }
 
   getAllProducts() {
+    if (!this.productListTarget) {
+      console.warn('Product list target not found')
+      return []
+    }
+    
     return Array.from(this.productListTarget.querySelectorAll("tr")).map(row => ({
-      name: row.getAttribute("data-name"),
-      category: row.getAttribute("data-category"),
-      price: parseFloat(row.getAttribute("data-price")),
-      stock: parseInt(row.getAttribute("data-stock")),
-      description: row.getAttribute("data-description"),
+      name: row.getAttribute("data-name") || "",
+      category: row.getAttribute("data-category") || "未分類",
+      price: parseFloat(row.getAttribute("data-price")) || 0,
+      stock: parseInt(row.getAttribute("data-stock")) || 0,
+      description: row.getAttribute("data-description") || "",
       element: row
     }))
   }
@@ -346,6 +472,22 @@ export default class extends Controller {
             allCategoryCheckbox.checked = false
           }
         })
+      }
+    })
+  }
+
+  setupModalFocusManagement() {
+    const modalElement = document.getElementById("productModal")
+    if (!modalElement) return
+
+    // ESCキーやX ボタンでモーダルが閉じられた時の処理
+    modalElement.addEventListener('hidden.bs.modal', (event) => {
+      // selectProductメソッドで処理されない場合のフォールバック
+      if (!event.defaultPrevented && this.currentFormGroup) {
+        const selectButton = this.currentFormGroup.querySelector("[data-action*='openProductModal']")
+        if (selectButton) {
+          setTimeout(() => selectButton.focus(), 100)
+        }
       }
     })
   }
