@@ -10,7 +10,6 @@ h1.text-center.my-5 商品計算画面
           i.fas.fa-search
         input.form-control(type="text" placeholder="商品名で検索" data-action="input->icon-calculator#filter" data-icon-calculator-target="search")
     .col-md-4.text-end
-      button.btn.btn-outline-secondary.me-2(type="button" data-action="click->icon-calculator#clear") クリア
       = link_to "PDF出力", "#", class: "btn btn-primary", data: { action: "click->icon-calculator#exportPdf" }
 
   .row
@@ -55,6 +54,6 @@ h1.text-center.my-5 商品計算画面
             tbody(data-icon-calculator-target="cart")
               tr.text-muted(data-empty-row)
                 td(colspan="6") 商品が追加されていません
-        .card-footer.text-end
+        .card-footer.text-end.d-flex.gap-2
           button.btn.btn-outline-danger.me-2(type="button" data-action="click->icon-calculator#clearCart") クリア
           = button_to "保存", "#", method: :post, class: "btn btn-success", data: { action: "click->icon-calculator#save" }
