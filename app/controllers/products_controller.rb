@@ -2,7 +2,7 @@ class ProductsController < ApplicationController
   require 'csv'
   before_action :set_product, only: %i[show edit update destroy]
   before_action :authenticate_user!
-  before_action :set_categories, only: %i[new edit create update calculate]
+  before_action :set_categories, only: %i[new edit create update calculate icon_calculate]
 
   def index
     @q = Product.ransack(params[:q])
@@ -131,6 +131,11 @@ class ProductsController < ApplicationController
   def calculate
     @products = Product.includes(:category).where(user: current_user, discarded_at: nil)
     # 念のため@categoriesを明示的に設定
+    @categories ||= Category.where(user: current_user)
+  end
+
+  def icon_calculate
+    @products = Product.includes(:category).where(user: current_user, discarded_at: nil)
     @categories ||= Category.where(user: current_user)
   end
 

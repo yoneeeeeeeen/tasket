@@ -18,12 +18,15 @@ Rails.application.routes.draw do
   resources :products do
     collection do
       get :calculate
+      get :icon_calculate
       get :index, defaults: { format: :html }
       get :export_empty_csv
       get :export_csv
       get :import_csv # CSV取り込み画面用のルート
       post :import_csv # CSV取り込み処理用のルート
       get :search
+      # アイコン型の新しい金額計算画面
+      get :icon_calculate
     end
   end
 
