@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["search", "grid", "cart", "total"]
+  static targets = ["search", "grid", "cart", "total", "categoryCheckbox"]
 
   connect() {
     this.items = [] // {id, name, price, qty}
@@ -9,16 +9,59 @@ export default class extends Controller {
   }
 
   filter() {
-    const q = (this.searchTarget.value || "").toLowerCase()
+    this.applyFilters()
+  }
+
+  // 複数カテゴリのチェックボックス変更時に呼ばれる
+  filterByCategories(event) {
+    // 「全て」を選択した場合は他を外す／他を選択した場合は「全て」を外す
+    if (event && event.currentTarget) {
+      const changed = event.currentTarget
+      const category = changed.dataset.category
+      if (category === "all" && changed.checked) {
+        this.categoryCheckboxTargets.forEach(cb => {
+          if (cb !== changed) cb.checked = false
+        })
+      } else if (category !== "all" && changed.checked) {
+        const allCb = this.categoryCheckboxTargets.find(cb => cb.dataset.category === "all")
+        if (allCb) allCb.checked = false
+      }
+    }
+    this.applyFilters()
+  }
+
+  applyFilters() {
+    const searchQuery = (this.searchTarget.value || "").toLowerCase()
+
+    // 選択されているカテゴリの配列（"all" は除外）
+    const checked = this.categoryCheckboxTargets.filter(cb => cb.checked)
+    const isAllChecked = checked.some(cb => cb.dataset.category === "all")
+    const selectedCategories = checked
+      .filter(cb => cb.dataset.category !== "all")
+      .map(cb => cb.dataset.category)
+
+    const noCategoryFilter = isAllChecked || selectedCategories.length === 0
+
     this.gridTarget.querySelectorAll('.card').forEach(card => {
       const name = (card.dataset.name || "").toLowerCase()
-      card.style.display = name.includes(q) ? "" : "none"
+      const category = card.dataset.category || ""
+
+      const matchesSearch = name.includes(searchQuery)
+      const matchesCategory = noCategoryFilter || selectedCategories.includes(category)
+
+      card.style.display = (matchesSearch && matchesCategory) ? "" : "none"
     })
   }
 
   clear() {
     this.searchTarget.value = ""
-    this.filter()
+    // カテゴリは「全て」をオン、他はオフ
+    const allCb = this.categoryCheckboxTargets.find(cb => cb.dataset.category === "all")
+    if (allCb) allCb.checked = true
+    this.categoryCheckboxTargets.forEach(cb => {
+      if (cb.dataset.category !== "all") cb.checked = false
+    })
+    this.applyFilters()
   }
 
   add(event) {

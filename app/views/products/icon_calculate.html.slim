@@ -4,13 +4,30 @@ h1.text-center.my-5 商品計算画面
 
 .container.mt-5(data-controller="icon-calculator")
   .row.mb-4
-    .col-md-8
+    .col-md-6
       .input-group.input-group-lg
         span.input-group-text
           i.fas.fa-search
         input.form-control(type="text" placeholder="商品名で検索" data-action="input->icon-calculator#filter" data-icon-calculator-target="search")
-    .col-md-4.text-end
-      = link_to "PDF出力", "#", class: "btn btn-primary", data: { action: "click->icon-calculator#exportPdf" }
+    .col-md-6
+      .card.bg-light
+        .card-body.py-2
+          .d-flex.flex-wrap.gap-2(data-icon-calculator-target="categoryCheckboxes")
+            .form-check
+              input.form-check-input(type="checkbox" id="category_all" data-action="change->icon-calculator#filterByCategories" data-icon-calculator-target="categoryCheckbox" data-category="all" checked)
+              label.form-check-label.fw-bold(for="category_all")
+                span.badge.bg-primary 全て
+            - @categories.each do |category|
+              .form-check
+                - id = "category_#{category.id}"
+                input.form-check-input(type="checkbox" id=id data-action="change->icon-calculator#filterByCategories" data-icon-calculator-target="categoryCheckbox" data-category=category.name)
+                label.form-check-label(for=id)
+                  span.badge.bg-secondary = category.name
+    .d-flex.justify-content-end.gap-2.mt-2
+        button.btn.btn-outline-secondary(type="button" data-action="click->icon-calculator#clear")
+            i.fas.fa-undo.me-1
+            | 検索クリア
+        = link_to "PDF出力", "#", class: "btn btn-primary", data: { action: "click->icon-calculator#exportPdf" }
 
   .row
     .col-12
@@ -30,7 +47,6 @@ h1.text-center.my-5 商品計算画面
               .text-success.fw-bold= number_to_currency(product.price, unit: "¥", precision: 0)
               button.btn.btn-sm.btn-primary.mt-2(type="button" data-action="click->icon-calculator#add" data-id=product.id data-name=product.name data-price=product.price)
                 i.fas.fa-plus.me-1
-                | 追加
 
   .row.mt-4
     .col-12
