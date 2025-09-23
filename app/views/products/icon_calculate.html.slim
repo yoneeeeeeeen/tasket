@@ -1,0 +1,89 @@
+h1.text-center.my-5 商品計算画面
+
+= render 'products/icon_calculator_nav'
+
+.container.mt-5(data-controller="icon-calculator")
+  .row.gy-3.align-items-end.mb-4
+    .col-12.col-md-6
+      .input-group.input-group-lg
+        span.input-group-text
+          i.fas.fa-search
+        input.form-control(type="text" placeholder="商品名で検索" data-action="input->icon-calculator#filter" data-icon-calculator-target="search")
+    .col-12.col-md-6
+      label.form-label.fw-bold.mb-2
+        i.fas.fa-tags.me-1
+        | カテゴリで絞り込み
+      .card.bg-light
+        .card-body.py-2
+          .d-flex.flex-wrap.gap-2(data-icon-calculator-target="categoryCheckboxes")
+            .form-check
+              input.form-check-input(type="checkbox" id="category_all" data-action="change->icon-calculator#filterByCategories" data-icon-calculator-target="categoryCheckbox" data-category="all" checked)
+              label.form-check-label.fw-bold(for="category_all")
+                span.badge.bg-primary 全て
+            .form-check
+              input.form-check-input(type="checkbox" id="category_uncategorized" data-action="change->icon-calculator#filterByCategories" data-icon-calculator-target="categoryCheckbox" data-category="未分類")
+              label.form-check-label(for="category_uncategorized")
+                span.badge.bg-secondary 未分類
+            - @categories.each do |category|
+              .form-check
+                - id = "category_#{category.id}"
+                input.form-check-input(type="checkbox" id=id data-action="change->icon-calculator#filterByCategories" data-icon-calculator-target="categoryCheckbox" data-category=category.name)
+                label.form-check-label(for=id)
+                  span.badge.bg-secondary = category.name
+          .d-flex.flex-wrap.justify-content-end.gap-2.mt-2
+            button.btn.btn-outline-secondary(type="button" data-action="click->icon-calculator#clear")
+              i.fas.fa-undo.me-1
+              | 検索クリア
+            = link_to "PDF出力", "#", class: "btn btn-primary", data: { action: "click->icon-calculator#exportPdf" }
+
+  .row
+    .col-12
+      .icon-grid(data-icon-calculator-target="grid")
+        - @products.each do |product|
+          .card.shadow-sm(data-name=product.name data-price=product.price data-id=product.id data-category=(product.category&.name || "未分類"))
+            .card-body.text-center
+              -# 商品アイコン（なければデフォルト）
+              - begin
+                - if product.respond_to?(:image) && product.image.attached?
+                  = image_tag product.image, class: "img-fluid rounded", alt: product.name
+                - else
+                  i.fas.fa-box.fa-3x.text-secondary
+              - rescue
+                i.fas.fa-box.fa-3x.text-secondary
+              .mt-2.fw-bold= product.name
+              .text-success.fw-bold= number_to_currency(product.price, unit: "¥", precision: 0)
+              button.btn.btn-sm.btn-primary.mt-2(type="button" data-action="click->icon-calculator#add" data-id=product.id data-name=product.name data-price=product.price)
+                i.fas.fa-plus.me-1
+                | 追加
+
+  .row.mt-4
+    .col-12
+      .card
+        .card-header.d-flex.flex-wrap.gap-2.justify-content-between.align-items-center
+          .fw-bold.flex-grow-1 選択した商品
+          .d-flex.align-items-center.gap-3
+            .fw-bold 合計:
+            .fs-4.fw-bold.text-success(data-icon-calculator-target="total") 0
+            span.fs-5.text-success 円
+        .card-body
+          / md以上: テーブル表示
+          .d-none.d-md-block
+            table.table.table-sm.align-middle
+              thead
+                tr
+                  th ステータス
+                  th 商品名
+                  th 単価
+                  th 数量
+                  th 小計
+                  th 操作
+              tbody(data-icon-calculator-target="cart")
+                tr.text-muted(data-empty-row)
+                  td(colspan="6") 商品が追加されていません
+          / sm以下: カードリスト表示
+          .d-md-none
+            .list-group(data-icon-calculator-target="cartList")
+              .list-group-item.text-muted(data-empty-mobile) 商品が追加されていません
+        .card-footer.text-end.d-flex.flex-wrap.gap-2
+          button.btn.btn-outline-danger.me-2(type="button" data-action="click->icon-calculator#clearCart") クリア
+          = button_to "保存", "#", method: :post, class: "btn btn-success", data: { action: "click->icon-calculator#save" }

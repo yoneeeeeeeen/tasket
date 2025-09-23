@@ -17,60 +17,9 @@
           h5.card-title カテゴリ管理
 
     .col
-      = link_to calculate_products_path, class: 'card h-100 text-decoration-none text-dark hover-darken', style: 'cursor:pointer;' do
+      = link_to icon_calculate_products_path, class: 'card h-100 text-decoration-none text-dark hover-darken', style: 'cursor:pointer;' do
         .card-body.text-center.mt-3
           i.fa-solid.fa-calculator.fa-4x.mb-3
           h5.card-title 商品金額計算
-
-    .col
-      = link_to import_csv_products_path, class: 'card h-100 text-decoration-none text-dark hover-darken', style: 'cursor:pointer;' do
-        .card-body.text-center.mt-3
-          i.fa-solid.fa-file-import.fa-4x.mb-3
-          h5.card-title 商品CSV取り込み
-
-    .col
-      = link_to menus_path, class: 'card h-100 text-decoration-none text-dark hover-darken', style: 'cursor:pointer;' do
-        .card-body.text-center.mt-3
-          i.fa-solid.fa-list-check.fa-4x.mb-3
-          h5.card-title メニュー
-
-    .col
-      = link_to events_path, class: 'card h-100 text-decoration-none text-dark hover-darken', style: 'cursor:pointer;' do
-        .card-body.text-center.mt-3
-          i.fa-solid.fa-calendar-days.fa-4x.mb-3
-          h5.card-title イベント管理
-
-  / リマインダーモーダル
-  .modal.fade#reminderModal tabindex="-1" aria-labelledby="reminderModalLabel" aria-hidden="true" data-reminder-modal-target="modal"
-    .modal-dialog.modal-lg
-      .modal-content
-        .modal-header
-          h5.modal-title#reminderModalLabel
-            i.fas.fa-bell.text-warning
-            |  本日のリマインダー
-          button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
-        .modal-body
-          - if @active_reminders&.any?
-            .row
-              - @active_reminders.each do |reminder|
-                .col-md-6.mb-3 data-reminder-id="#{reminder.id}"
-                  .card.border-warning
-                    .card-body
-                      h6.card-title
-                        i.fas.fa-calendar-alt.text-primary
-                        = reminder.event.name
-                      p.card-text
-                        strong = reminder.title
-                      small.text-muted
-                        i.fas.fa-clock
-                        = reminder.remind_at.strftime("%H:%M")
-                      .mt-2
-                        button.btn.btn-sm.btn-success type="button" data-reminder-id="#{reminder.id}" data-action="click->reminder-modal#dismissReminder"
-                          i.fas.fa-check
-                          |  確認済み
-          - else
-            p.text-center.text-muted 現在表示するリマインダーはありません
-        .modal-footer
-          button.btn.btn-secondary type="button" data-bs-dismiss="modal" 閉じる
 
 
