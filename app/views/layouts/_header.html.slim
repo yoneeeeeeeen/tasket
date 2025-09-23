@@ -37,17 +37,19 @@
   .d-none.d-lg-block
     .col-12.mb-2
       img src=asset_path("tas.png") alt="" class="img-fluid m-2 mt-4" style="width: 150px; height:100px;"
-    - # ユーザーが設定したメニューを表示
-    - if current_user && current_user.respond_to?(:user_menus)
-      - current_user.user_menus.includes(:menu).joins(:menu).where(active: true).order('menus.display_order').each do |user_menu|
-        .col-12.mb-3
-          = link_to send(user_menu.menu.path), class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(send(user_menu.menu.path))}" do
-            i.fa-solid class="#{user_menu.menu.icon} fa-4x mb-2"
-            span.fw-bold = user_menu.menu.name
-    - else
-      - # デフォルトのメニューを表示（ユーザーがログインしていない場合など）
-      - Menu.where(active: true).order(display_order: :asc).each do |menu|
-        .col-12.mb-3
-          = link_to send(menu.path), class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(send(menu.path))}" do
-            i.fa-solid class="#{menu.icon} fa-4x mb-2"
-            span.fw-bold = menu.name
+    .col-12.mb-3
+      = link_to root_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(root_path)}" do
+        i.fa-solid.fa-home.fa-4x.mb-2
+        span.fw-bold ホーム
+    .col-12.mb-3
+      = link_to categories_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(categories_path)}" do
+        i.fa-solid.fa-list.fa-4x.mb-2
+        span.fw-bold カテゴリ
+    .col-12.mb-3
+      = link_to products_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(products_path)}" do
+        i.fa-solid.fa-box.fa-4x.mb-2
+        span.fw-bold 商品
+    .col-12.mb-3
+      = link_to icon_calculate_products_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(icon_calculate_products_path)}" do
+        i.fa-solid.fa-calculator.fa-4x.mb-2
+        span.fw-bold 商品計算
