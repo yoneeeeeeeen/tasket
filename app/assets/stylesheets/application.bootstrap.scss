@@ -97,3 +97,26 @@ button {
   font-family: 'Kosugi Maru', sans-serif;
   font-size: 1rem; /* ボタンのフォントサイズを統一 */
 }
+
+/* アイコン計算画面のレスポンシブグリッド */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.icon-grid .card {
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .icon-grid {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .icon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}

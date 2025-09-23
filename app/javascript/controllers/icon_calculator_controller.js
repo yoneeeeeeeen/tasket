@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["search", "grid", "cart", "total", "categoryCheckbox"]
+  static targets = ["search", "grid", "cart", "cartList", "total", "categoryCheckbox"]
 
   connect() {
     this.items = [] // {id, name, price, qty}
@@ -101,31 +101,68 @@ export default class extends Controller {
   }
 
   renderCart() {
-    // tbodyクリア
-    this.cartTarget.innerHTML = ''
+    // テーブルtbodyをクリア
+    if (this.hasCartTarget) this.cartTarget.innerHTML = ''
+    // モバイルリストをクリア
+    if (this.hasCartListTarget) this.cartListTarget.innerHTML = ''
 
     if (this.items.length === 0) {
-      const tr = document.createElement('tr')
-      tr.className = 'text-muted'
-      tr.innerHTML = '<td colspan="6">商品が追加されていません</td>'
-      this.cartTarget.appendChild(tr)
+      if (this.hasCartTarget) {
+        const tr = document.createElement('tr')
+        tr.className = 'text-muted'
+        tr.innerHTML = '<td colspan="6">商品が追加されていません</td>'
+        this.cartTarget.appendChild(tr)
+      }
+      if (this.hasCartListTarget) {
+        const li = document.createElement('div')
+        li.className = 'list-group-item text-muted'
+        li.textContent = '商品が追加されていません'
+        this.cartListTarget.appendChild(li)
+      }
       this.updateTotal()
       return
     }
 
-    this.items.forEach(item => {
-      const subtotal = item.price * item.qty
-      const tr = document.createElement('tr')
-      tr.innerHTML = `
-        <td><span class="badge bg-success">選択</span></td>
-        <td>${this.escape(item.name)}</td>
-        <td>¥${this.format(item.price)}</td>
-        <td><input type="number" class="form-control form-control-sm" min="1" value="${item.qty}" data-action="change->icon-calculator#changeQty" data-id="${item.id}"></td>
-        <td>¥${this.format(subtotal)}</td>
-        <td><button class="btn btn-sm btn-outline-danger" data-action="click->icon-calculator#remove" data-id="${item.id}"><i class="fas fa-trash"></i></button></td>
-      `
-      this.cartTarget.appendChild(tr)
-    })
+    // テーブル行の描画
+    if (this.hasCartTarget) {
+      this.items.forEach(item => {
+        const subtotal = item.price * item.qty
+        const tr = document.createElement('tr')
+        tr.innerHTML = `
+          <td><span class="badge bg-success">選択</span></td>
+          <td>${this.escape(item.name)}</td>
+          <td>¥${this.format(item.price)}</td>
+          <td><input type="number" class="form-control form-control-sm" min="1" value="${item.qty}" data-action="change->icon-calculator#changeQty" data-id="${item.id}"></td>
+          <td>¥${this.format(subtotal)}</td>
+          <td><button class="btn btn-sm btn-outline-danger" data-action="click->icon-calculator#remove" data-id="${item.id}"><i class="fas fa-trash"></i></button></td>
+        `
+        this.cartTarget.appendChild(tr)
+      })
+    }
+
+    // モバイルカードの描画
+    if (this.hasCartListTarget) {
+      this.items.forEach(item => {
+        const subtotal = item.price * item.qty
+        const div = document.createElement('div')
+        div.className = 'list-group-item'
+        div.innerHTML = `
+          <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+            <strong>${this.escape(item.name)}</strong>
+            <button class="btn btn-sm btn-outline-danger" data-action="click->icon-calculator#remove" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+          </div>
+          <div class="d-flex align-items-center justify-content-between gap-2">
+            <div class="text-success">単価: ¥${this.format(item.price)}</div>
+            <div class="flex-grow-1 d-flex align-items-center gap-2">
+              <label class="small text-muted">数量</label>
+              <input type="number" class="form-control form-control-sm" min="1" value="${item.qty}" data-action="change->icon-calculator#changeQty" data-id="${item.id}">
+            </div>
+            <div class="fw-bold">小計: ¥${this.format(subtotal)}</div>
+          </div>
+        `
+        this.cartListTarget.appendChild(div)
+      })
+    }
 
     this.updateTotal()
   }
