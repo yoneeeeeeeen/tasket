@@ -174,10 +174,55 @@ export default class extends Controller {
 
   save(event) {
     event.preventDefault()
-    // 簡易保存：ローカルストレージに保存（将来的にサーバ保存に切替可能）
-    const payload = { items: this.items, savedAt: new Date().toISOString() }
-    localStorage.setItem('iconCalculatorCart', JSON.stringify(payload))
-    alert('選択内容を保存しました。')
+    
+    if (this.items.length === 0) {
+      alert('保存する商品が選択されていません。')
+      return
+    }
+    
+    const title = prompt('履歴のタイトルを入力してください:', `計算履歴 ${new Date().toLocaleDateString('ja-JP')}`)
+    if (!title) return
+    
+    const total = this.items.reduce((acc, i) => acc + i.price * i.qty, 0)
+    
+    const payload = {
+      product_calculation_history: {
+        title: title,
+        total_amount: total,
+        items_attributes: this.items.map(item => ({
+          product_id: item.id,
+          quantity: item.qty,
+          price: item.price,
+          subtotal: item.price * item.qty
+        }))
+      }
+    }
+    
+    // CSRFトークンを取得
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content
+    
+    fetch('/product_calculation_histories', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message)
+        // 履歴一覧ページへリダイレクト
+        window.location.href = '/product_calculation_histories'
+      } else {
+        alert('保存に失敗しました: ' + data.errors.join(', '))
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error)
+      alert('保存中にエラーが発生しました。')
+    })
   }
 
   async exportPdf(event) {

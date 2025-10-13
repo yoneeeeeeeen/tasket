@@ -1,0 +1,59 @@
+h1.text-center.my-5 商品計算履歴一覧
+
+.container.mt-4
+  .row.mb-3
+    .col-12.d-flex.justify-content-between.align-items-center
+      h3.mb-0
+        i.fas.fa-history.me-2
+        | 保存した計算履歴
+      = link_to icon_calculate_products_path, class: "btn btn-primary" do
+        i.fas.fa-calculator.me-1
+        | 商品計算に戻る
+
+  - if @histories.any?
+    .row
+      .col-12
+        .table-responsive
+          table.table.table-hover.align-middle
+            thead.table-light
+              tr
+                th.text-center タイトル
+                th.text-center 合計金額
+                th.text-center 商品数
+                th.text-center 保存日時
+                th.text-center 操作
+            tbody
+              - @histories.each do |history|
+                tr
+                  td
+                    = link_to history.title, product_calculation_history_path(history), class: "text-decoration-none fw-bold"
+                  td.text-end.text-success.fw-bold
+                    = number_to_currency(history.total_amount, unit: "¥", precision: 0)
+                  td.text-center
+                    span.badge.bg-info.text-dark
+                      = history.items.count
+                      | 品目
+                  td.text-center
+                    = history.saved_at.strftime('%Y年%m月%d日 %H:%M')
+                  td.text-center
+                    .d-flex.gap-2.justify-content-center
+                      = link_to product_calculation_history_path(history), class: "btn btn-sm btn-outline-primary" do
+                        i.fas.fa-eye.me-1
+                        | 詳細
+                      = button_to product_calculation_history_path(history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-sm btn-outline-danger" do
+                        i.fas.fa-trash.me-1
+                        | 削除
+
+    .row.mt-4
+      .col-12.d-flex.justify-content-center
+        = paginate @histories
+  - else
+    .row
+      .col-12
+        .alert.alert-info.text-center
+          i.fas.fa-info-circle.me-2
+          | まだ保存された計算履歴がありません。商品計算画面で商品を選択して保存してください。
+          .mt-3
+            = link_to icon_calculate_products_path, class: "btn btn-primary" do
+              i.fas.fa-calculator.me-1
+              | 商品計算を始める

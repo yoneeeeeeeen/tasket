@@ -1,0 +1,119 @@
+h1.text-center.my-5 計算履歴詳細
+
+.container.mt-4
+  .row.mb-3
+    .col-12.d-flex.justify-content-between.align-items-center
+      h3.mb-0
+        i.fas.fa-file-invoice.me-2
+        = @history.title
+      .d-flex.gap-2
+        = link_to product_calculation_histories_path, class: "btn btn-outline-secondary" do
+          i.fas.fa-arrow-left.me-1
+          | 履歴一覧に戻る
+        = link_to icon_calculate_products_path, class: "btn btn-primary" do
+          i.fas.fa-calculator.me-1
+          | 商品計算に戻る
+
+  .row.mb-4
+    .col-12
+      .card
+        .card-header.bg-primary.text-white
+          .d-flex.justify-content-between.align-items-center
+            span.fw-bold
+              i.fas.fa-info-circle.me-2
+              | 履歴情報
+            span.text-end
+              = @history.saved_at.strftime('%Y年%m月%d日 %H:%M')
+        .card-body
+          .row
+            .col-md-6
+              p.mb-2
+                strong タイトル:
+                = " #{@history.title}"
+            .col-md-6.text-md-end
+              p.mb-2
+                strong 保存日時:
+                = " #{@history.saved_at.strftime('%Y年%m月%d日 %H:%M')}"
+
+  .row.mb-4
+    .col-12
+      .card
+        .card-header.bg-light
+          .fw-bold
+            i.fas.fa-shopping-cart.me-2
+            | 選択した商品一覧
+            span.badge.bg-info.text-dark.ms-2
+              = @items.count
+              | 品目
+        .card-body.p-0
+          / デスクトップ: テーブル表示
+          .d-none.d-md-block
+            .table-responsive
+              table.table.table-hover.align-middle.mb-0
+                thead.table-light
+                  tr
+                    th.text-center No.
+                    th 商品名
+                    th.text-center カテゴリ
+                    th.text-end 単価
+                    th.text-center 数量
+                    th.text-end 小計
+                tbody
+                  - @items.each_with_index do |item, index|
+                    tr
+                      td.text-center.text-muted = index + 1
+                      td
+                        strong = item.product.name
+                      td.text-center
+                        - if item.product.category
+                          span.badge.bg-secondary = item.product.category.name
+                        - else
+                          span.badge.bg-light.text-dark 未分類
+                      td.text-end = number_to_currency(item.price, unit: "¥", precision: 0)
+                      td.text-center
+                        span.badge.bg-primary = item.quantity
+                      td.text-end.fw-bold.text-success = number_to_currency(item.subtotal, unit: "¥", precision: 0)
+          
+          / モバイル: カードリスト表示
+          .d-md-none
+            .list-group.list-group-flush
+              - @items.each_with_index do |item, index|
+                .list-group-item
+                  .d-flex.w-100.justify-content-between.align-items-start.mb-2
+                    .fw-bold
+                      span.badge.bg-secondary.me-2 = index + 1
+                      = item.product.name
+                    - if item.product.category
+                      span.badge.bg-secondary = item.product.category.name
+                    - else
+                      span.badge.bg-light.text-dark 未分類
+                  .d-flex.justify-content-between.align-items-center
+                    .text-muted.small
+                      | 単価: 
+                      = number_to_currency(item.price, unit: "¥", precision: 0)
+                    .text-muted.small
+                      | 数量: 
+                      span.badge.bg-primary = item.quantity
+                  .text-end.fw-bold.text-success.mt-1
+                    | 小計: 
+                    = number_to_currency(item.subtotal, unit: "¥", precision: 0)
+
+  .row
+    .col-12
+      .card.border-success
+        .card-header.bg-success.text-white
+          .d-flex.justify-content-between.align-items-center
+            span.fw-bold
+              i.fas.fa-calculator.me-2
+              | 合計金額
+            span.fs-4.fw-bold
+              = number_to_currency(@history.total_amount, unit: "¥", precision: 0)
+
+  .row.mt-4
+    .col-12.d-flex.justify-content-between
+      = button_to product_calculation_history_path(@history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger" do
+        i.fas.fa-trash.me-1
+        | この履歴を削除
+      = link_to product_calculation_histories_path, class: "btn btn-outline-secondary" do
+        i.fas.fa-list.me-1
+        | 履歴一覧へ

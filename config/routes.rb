@@ -34,6 +34,9 @@ Rails.application.routes.draw do
     resources :reminders
   end
 
+  # 商品計算履歴のルート
+  resources :product_calculation_histories, only: [:index, :show, :create, :destroy]
+
   # アプリケーションのルート設定
   get "up" => "rails/health#show", as: :rails_health_check
 end

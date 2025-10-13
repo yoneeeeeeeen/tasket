@@ -1,1 +1,17 @@
+.container-fluid.bg-light.py-3.mb-4
 
+  .container
+    .row
+      .col-12
+        nav.d-flex.justify-content-between.align-items-center.flex-wrap.gap-2
+          .d-flex.gap-2.align-items-center
+            h5.mb-0.text-primary
+              i.fas.fa-calculator.me-2
+              | 商品計算
+          .d-flex.gap-2
+            = link_to product_calculation_histories_path, class: "btn btn-outline-primary" do
+              i.fas.fa-history.me-1
+              | 計算履歴
+            = link_to products_path, class: "btn btn-outline-secondary" do
+              i.fas.fa-box.me-1
+              | 商品一覧
