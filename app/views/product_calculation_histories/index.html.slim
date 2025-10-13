@@ -11,7 +11,8 @@ h1.text-center.my-5 商品計算履歴一覧
         | 商品計算に戻る
 
   - if @histories.any?
-    .row
+    / デスクトップ: テーブル表示
+    .row.d-none.d-lg-block
       .col-12
         .table-responsive
           table.table.table-hover.align-middle
@@ -43,6 +44,37 @@ h1.text-center.my-5 商品計算履歴一覧
                       = button_to product_calculation_history_path(history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-sm btn-outline-danger" do
                         i.fas.fa-trash.me-1
                         | 削除
+
+    / タブレット・モバイル: カード表示
+    .row.d-lg-none
+      .col-12
+        - @histories.each do |history|
+          .card.mb-3.shadow-sm
+            .card-body
+              .d-flex.justify-content-between.align-items-start.mb-2
+                h5.card-title.mb-0.flex-grow-1
+                  = link_to history.title, product_calculation_history_path(history), class: "text-decoration-none"
+                span.badge.bg-info.text-dark.ms-2
+                  = history.items.count
+                  | 品目
+              .row.g-2.mb-3
+                .col-6
+                  .text-muted.small 合計金額
+                  .text-success.fw-bold.fs-5
+                    = number_to_currency(history.total_amount, unit: "¥", precision: 0)
+                .col-6
+                  .text-muted.small 保存日時
+                  .text-dark
+                    = history.saved_at.strftime('%Y/%m/%d')
+                    br
+                    = history.saved_at.strftime('%H:%M')
+              .d-flex.gap-2.flex-wrap
+                = link_to product_calculation_history_path(history), class: "btn btn-sm btn-outline-primary flex-fill" do
+                  i.fas.fa-eye.me-1
+                  | 詳細
+                = button_to product_calculation_history_path(history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-sm btn-outline-danger flex-fill" do
+                  i.fas.fa-trash.me-1
+                  | 削除
 
     .row.mt-4
       .col-12.d-flex.justify-content-center

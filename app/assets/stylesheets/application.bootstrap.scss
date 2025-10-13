@@ -2,28 +2,61 @@
 @use 'bootstrap-icons/font/bootstrap-icons';
 @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap');
 
+/* カスタムカラーパレット */
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --accent-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+  --accent-color: #4facfe;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --bg-light: #f7fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
 
 /* ナビゲーションバーのスタイル */
 .header-wrapper {
-  width: 200px; /* ナビゲーションバーの幅 */
-  background-color: #f8f9fa; /* 背景色 */
-  border-right: 1px solid #ddd; /* 右側の境界線 */
-  box-sizing: border-box; /* ボーダーを含めた幅を計算 */
-  border: 1px solid #ddd; /* 全体を囲むボーダー */
-  border-radius: 5px; /* 角を丸くする */
-  margin: 1rem; /* 外側の余白 */
+  width: 240px;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
+  border-right: none;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-md);
+  margin: 0;
+  padding: 1.5rem 1rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.header-wrapper .container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* メインコンテンツのスタイル */
 .main-wrapper {
-  flex: 1; /* 残りのスペースを占める */
-  padding: 1rem; /* 内側の余白 */
-  background-color: #ffffff; /* 背景色 */
-  border: 1px solid #ddd; /* 全体を囲むボーダー */
-  border-radius: 5px; /* 角を丸くする */
-  margin: 1rem; /* 外側の余白 */
-  box-sizing: border-box; /* ボーダーを含めた幅を計算 */
-  min-height: 100vh; /* 最小幅を100vhに設定 */
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--bg-light);
+  box-sizing: border-box;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .animate-fade-in {
@@ -52,6 +85,84 @@
   }
 }
 
+/* カード要素のスタイル */
+.card {
+  background: var(--bg-card);
+  border: none;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.card-header {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 1.25rem 1.5rem;
+  font-weight: 600;
+  border-radius: 16px 16px 0 0 !important;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* ボタンのスタイル */
+.btn {
+  font-family: 'Kosugi Maru', sans-serif;
+  font-size: 1rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+  background: var(--primary-gradient);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.9;
+}
+
+.btn-outline-secondary {
+  border: 2px solid var(--border-color);
+  color: var(--text-secondary);
+  background: white;
+}
+
+.btn-outline-secondary:hover {
+  background: var(--bg-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* フォームコントロールのスタイル */
+.form-control {
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
+  padding: 0.625rem 1rem;
+  font-family: 'Kosugi Maru', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
 /* 幅が狭いときは縦方向に変更 */
 @media (max-width: 992px) {
   .layout-wrapper {
@@ -59,43 +170,222 @@
   }
 
   .header-wrapper {
-    width: 100%; /* 横幅を開放 */
-    margin: 0; /* 外側の余白をリセット */
-    border-right: none; /* 右側の境界線を削除 */
-    border-bottom: 1px solid #ddd; /* 下側に境界線を追加 */
+    width: 100%;
+    height: auto;
+    padding: 0.75rem 1rem;
+    box-shadow: var(--shadow-md);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
+    overflow-y: visible;
+  }
+
+  /* モバイルヘッダー内のコンテナ調整 */
+  .header-wrapper .container {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    height: auto;
+    display: block;
+  }
+
+  .main-wrapper {
+    padding: 1rem;
+    margin-top: 80px; /* ヘッダーの高さ分の余白 */
+    padding-top: 1rem;
+  }
+
+  /* ハンバーガーメニューが開いているときのスタイル */
+  .navbar-collapse {
+    background: white;
+    box-shadow: var(--shadow-md);
+    border-radius: 0 0 12px 12px;
+    margin: 0.5rem -1rem 0;
+    padding: 0;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+
+  .navbar-collapse.show, .navbar-collapse.collapsing {
+    padding: 0.5rem 1rem 1rem;
+  }
+
+  .navbar-nav {
+    gap: 0.25rem;
   }
 
   .navbar-nav .nav-link {
-    font-size: 1.25rem; /* テキストを大きく */
-    padding: 1rem; /* 項目の余白を広げる */
+    font-size: 1rem;
+    padding: 0.75rem 1rem !important;
   }
 
   .navbar-nav .nav-link i {
-    font-size: 2rem; /* アイコンを大きく */
-    margin-bottom: 0.5rem; /* アイコンとテキストの間隔を調整 */
+    font-size: 1.25rem;
+  }
+
+  /* モバイルでのナビゲーションアイテム */
+  .nav-item-custom {
+    margin-bottom: 0.25rem;
+  }
+
+  /* navbar-toggler のスタイル調整 */
+  .navbar-toggler {
+    border: none;
+    box-shadow: var(--shadow-sm);
+    border-radius: 8px;
+    background: white;
+  }
+
+  .navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  }
+
+  /* スクロール時のヘッダー影を強調 */
+  .header-wrapper.scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* body全体のスクロールバーを常に表示してレイアウトシフトを防ぐ */
+  body {
+    overflow-y: scroll;
   }
 }
 
+/* デスクトップサイズでのスタイル確保 */
+@media (min-width: 993px) {
+  .header-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .header-wrapper .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-wrapper {
+    margin-top: 0;
+  }
+}
+
+.hover-darken {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .hover-darken:hover {
-  filter: brightness(85%);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
 /* 全体のフォントを統一 */
 body {
   font-family: 'Kosugi Maru', sans-serif;
-  line-height: 1.6; /* 読みやすさのために行間を調整 */
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-light);
 }
 
 /* 見出しのフォントを強調 */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Kosugi Maru', sans-serif;
-  font-weight: 600; /* 見出しは少し太字 */
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
-/* ボタンのフォントを統一 */
-button {
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* アラートメッセージのスタイル */
+.alert {
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+  color: #22543d;
+}
+
+.alert-danger {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+  color: #742a2a;
+}
+
+/* ドロップダウンメニューのスタイル */
+.dropdown-menu {
+  border: none;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.dropdown-item {
+  border-radius: 8px;
+  padding: 0.625rem 1rem;
+  transition: all 0.2s ease;
   font-family: 'Kosugi Maru', sans-serif;
-  font-size: 1rem; /* ボタンのフォントサイズを統一 */
+}
+
+.dropdown-item:hover {
+  background: var(--bg-light);
+  color: var(--primary-color);
+  transform: translateX(4px);
+}
+
+/* ナビゲーションアイテムのスタイル */
+.nav-item-custom {
+  position: relative;
+  margin-bottom: 0.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.nav-item-custom:hover {
+  background: var(--bg-light);
+}
+
+.nav-item-custom.active {
+  background: var(--primary-gradient);
+}
+
+.nav-item-custom.active .nav-link {
+  color: white !important;
+}
+
+.nav-link {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  padding: 0.75rem 1rem !important;
 }
 
 /* アイコン計算画面のレスポンシブグリッド */
@@ -120,3 +410,83 @@ button {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 }
+
+/* ホーム画面のカードスタイル */
+.home-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.home-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.home-card:hover::before {
+  opacity: 1;
+}
+
+.home-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.home-card .icon-circle {
+  transition: transform 0.3s ease;
+}
+
+.home-card:hover .icon-circle {
+  transform: rotate(10deg) scale(1.1);
+}
+
+/* 商品アイテムのホバー効果 */
+.product-item:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+/* カテゴリアイテムのホバー効果 */
+.category-item > div:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ページネーションのスタイル */
+.pagination {
+  gap: 0.5rem;
+}
+
+.pagination .page-link {
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+  background: var(--primary-gradient);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+.pagination .page-item.active .page-link {
+  background: var(--primary-gradient);
+  border-color: transparent;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+

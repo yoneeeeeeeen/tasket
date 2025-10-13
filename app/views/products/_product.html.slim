@@ -1,22 +1,38 @@
-div id="product_#{product.id}" class="product-item border rounded p-3 mb-3 shadow-sm"
-  .row.align-items-center.g-3
-    .col-12.col-md-3.text-center.text-md-start
-      h5.mb-0.fs-4 = product.name
-      small.text-muted.fs-6 = product.category.name if product.category
-    .col-6.col-md-2.text-center
-      span.fw-bold.fs-5 = "#{number_to_currency(product.price, unit: '', precision: 0)}円"
-    .col-6.col-md-2.text-center
-      span.fw-bold.fs-5 = "#{product.stock_quantity}個"
-    .col-12.col-md-5.text-center.text-md-end
-      = link_to product_path(product), class: 'btn btn-outline-primary btn-lg me-2', data: { turbo_frame: "product_details_#{product.id}" } do
-        i.fa-solid.fa-server.me-1
-        | 詳細
-      = link_to edit_product_path(product), class: 'btn btn-outline-secondary btn-lg me-2', data: { turbo_frame: "product_details_#{product.id}" } do
-        i.fas.fa-edit.me-1
-        | 編集
-      = link_to product_path(product), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'btn btn-outline-danger btn-lg' do
-        i.fas.fa-trash.me-1
-        | 削除
+div id="product_#{product.id}" class="product-item card border-0 mb-3" style="box-shadow: var(--shadow-sm); transition: all 0.3s ease;"
+  .card-body.p-4
+    .row.align-items-center.g-3
+      .col-12.col-md-4
+        h5.mb-1.fw-bold style="color: var(--text-primary);" = product.name
+        - if product.category
+          span.badge.rounded-pill style="background: var(--primary-gradient); font-size: 0.85rem;"
+            i.fa-solid.fa-tag.me-1
+            = product.category.name
+      
+      .col-6.col-md-2.text-center
+        .d-flex.flex-column
+          small.text-muted.mb-1
+            i.fa-solid.fa-yen-sign.me-1
+            | 価格
+          span.fw-bold.fs-5 style="color: var(--primary-color);" = "#{number_to_currency(product.price, unit: '', precision: 0)}円"
+      
+      .col-6.col-md-2.text-center
+        .d-flex.flex-column
+          small.text-muted.mb-1
+            i.fa-solid.fa-boxes-stacked.me-1
+            | 在庫
+          span.fw-bold.fs-5 style="color: var(--accent-color);" = "#{product.stock_quantity}個"
+      
+      .col-12.col-md-4.text-end
+        .d-flex.flex-wrap.gap-2.justify-content-end
+          = link_to product_path(product), class: 'btn btn-sm btn-outline-primary', data: { turbo_frame: "product_details_#{product.id}" } do
+            i.fa-solid.fa-eye.me-1
+            | 詳細
+          = link_to edit_product_path(product), class: 'btn btn-sm btn-outline-secondary', data: { turbo_frame: "product_details_#{product.id}" } do
+            i.fas.fa-edit.me-1
+            | 編集
+          = link_to product_path(product), data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'btn btn-sm btn-outline-danger' do
+            i.fas.fa-trash.me-1
+            | 削除
 
   / 各製品ごとの詳細表示用のturbo_frame
   = turbo_frame_tag "product_details_#{product.id}"
