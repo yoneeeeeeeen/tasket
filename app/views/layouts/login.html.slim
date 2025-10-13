@@ -21,14 +21,11 @@ html
 
   body
     .layout-wrapper.d-flex
-      .header-wrapper
-        = render 'layouts/header'
-      .main-wrapper
-        / フラッシュメッセージの表示
-        - if flash[:alert]
-          .alert.alert-danger role="alert"
-            = flash[:alert]
-        - if flash[:notice]
-          .alert.alert-success role="alert"
-            = flash[:notice]
-        = yield
+      / フラッシュメッセージの表示
+      - if flash[:alert]
+        .alert.alert-danger role="alert"
+          = flash[:alert]
+      - if flash[:notice]
+        .alert.alert-success role="alert"
+          = flash[:notice]
+      = yield

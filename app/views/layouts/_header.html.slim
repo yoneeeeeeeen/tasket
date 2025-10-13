@@ -32,6 +32,10 @@
             = link_to icon_calculate_products_path, class: "nav-link #{'text-muted' unless current_page?(icon_calculate_products_path)}" do
               i.fa-solid.fa-calculator.fa-lg
               span.ms-2 商品計算
+          li.nav-item
+            = link_to import_csv_products_path, class: "nav-link #{'text-muted' unless current_page?(export_empty_csv_products_path)}" do
+              i.fa-solid.fa-file-csv.fa-lg
+              span.ms-2 CSV出力
 
   / 幅が大きいときの現在のデザイン
   .d-none.d-lg-block
@@ -53,3 +57,7 @@
       = link_to icon_calculate_products_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(icon_calculate_products_path)}" do
         i.fa-solid.fa-calculator.fa-4x.mb-2
         span.fw-bold 商品計算
+    .col-12.mb-3
+      = link_to import_csv_products_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(export_empty_csv_products_path)}" do
+        i.fa-solid.fa-file-csv.fa-4x.mb-2
+        span.fw-bold CSV出力

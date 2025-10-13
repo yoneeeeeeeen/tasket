@@ -1,5 +1,5 @@
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-  <div class="form-card shadow-lg rounded p-4" style="max-width: 400px; width: 100%; background-color: #f8f9fa;">
+  <div class="form-card shadow-lg rounded p-4 border" style="max-width: 400px; width: 100%; background-color: #f8f9fa;">
     <div class="form-card-header text-center py-3">
       <h2 class="fw-bold"><%= t('devise.sessions.title') %></h2>
     </div>
@@ -8,7 +8,6 @@
         <div class="mb-4">
           <%= f.label :email, t('devise.sessions.email'), class: "form-label fw-bold" %>
           <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control form-control-lg", id: "exampleInputEmail1" %>
-          <div id="emailHelp" class="form-text text-muted"><%= t('devise.sessions.email_help') %></div>
         </div>
 
         <div class="mb-4">
@@ -25,9 +24,6 @@
 
         <button type="submit" class="btn btn-primary btn-lg w-100"><%= t('devise.sessions.submit') %></button>
       <% end %>
-    </div>
-    <div class="form-card-footer text-center py-3">
-      <p class="mb-0"><%= render "devise/shared/links" %></p>
     </div>
   </div>
 </div>
