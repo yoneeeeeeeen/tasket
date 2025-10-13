@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_many :menus, through: :user_menus
   has_many :events, dependent: :destroy
   has_many :reminders, through: :events
+  has_many :product_calculation_histories, dependent: :destroy
 
   # スーパーユーザー判定メソッド
   def superuser?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_30_155042) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_13_040835) do
   create_table "categories", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -43,6 +43,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_155042) do
     t.index ["name"], name: "index_menus_on_name", unique: true
     t.index ["path"], name: "index_menus_on_path", unique: true
     t.index ["role"], name: "index_menus_on_role"
+  end
+
+  create_table "product_calculation_histories", charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title"
+    t.decimal "total_amount", precision: 10
+    t.datetime "saved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_product_calculation_histories_on_user_id"
+  end
+
+  create_table "product_calculation_history_items", charset: "utf8mb3", collation: "utf8mb3_general_ci", force: :cascade do |t|
+    t.bigint "product_calculation_history_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "quantity"
+    t.decimal "price", precision: 10
+    t.decimal "subtotal", precision: 10
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_calculation_history_id"], name: "idx_on_product_calculation_history_id_e8bba2b53d"
+    t.index ["product_id"], name: "index_product_calculation_history_items_on_product_id"
   end
 
   create_table "products", charset: "utf8mb4", collation: "utf8mb4_uca1400_ai_ci", force: :cascade do |t|
@@ -134,6 +156,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_155042) do
 
   add_foreign_key "categories", "users"
   add_foreign_key "events", "users"
+  add_foreign_key "product_calculation_histories", "users"
+  add_foreign_key "product_calculation_history_items", "product_calculation_histories"
+  add_foreign_key "product_calculation_history_items", "products"
   add_foreign_key "products", "categories"
   add_foreign_key "reminders", "events"
   add_foreign_key "task_tags", "tags"

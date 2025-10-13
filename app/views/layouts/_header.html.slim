@@ -1,55 +1,94 @@
-.container.d-flex.flex-column.justify-content-center.text-center
-  .d-flex.justify-content-end.mt-3
-    .dropdown
-      button.btn.btn-secondary.dropdown-toggle type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false"
-        i.fa-solid.fa-user-circle.fa-lg
-      ul.dropdown-menu[aria-labelledby="userMenu"]
-        li
-          = link_to 'ログアウト', destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: "dropdown-item"
+.container.d-flex.flex-column.h-100 data-controller="navbar"
+  / モバイル用のトップバー（ロゴ、ハンバーガー、ユーザーメニュー）
+  .d-lg-none
+    .d-flex.justify-content-between.align-items-center.mb-2
+      .logo-section
+        = link_to root_path, class: "text-decoration-none" do
+          img src=asset_path("tas.png") alt="Tasket" class="img-fluid" style="width: 100px; height: 65px; object-fit: contain;"
+      .d-flex.align-items-center.gap-2
+        .dropdown
+          button.btn.rounded-circle.p-2 type="button" id="userMenuMobile" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px; box-shadow: var(--shadow-sm);"
+            i.fa-solid.fa-user-circle.fa-lg style="color: var(--primary-color);"
+          ul.dropdown-menu.dropdown-menu-end[aria-labelledby="userMenuMobile"]
+            li
+              = link_to destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: "dropdown-item" do
+                i.fa-solid.fa-right-from-bracket.me-2
+                | ログアウト
+        button.navbar-toggler.border-0 type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="padding: 0.5rem;"
+          span.navbar-toggler-icon
 
-  / 幅が狭いときのハンバーガーメニュー
-  nav.navbar.navbar-expand-lg.navbar-light.bg-light.d-lg-none
-    .container-fluid
-      = link_to root_path, class: "navbar-brand d-flex align-items-center" do
-        img src=asset_path("tas.png") alt="" class="img-fluid" style="width: 200px; height:130px;"
-      button.navbar-toggler type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
-        span.navbar-toggler-icon
-      .collapse.navbar-collapse#navbarNav
-        ul.navbar-nav
-          li.nav-item
-            = link_to root_path, class: "nav-link #{'text-muted' unless current_page?(root_path)}" do
-              i.fa-solid.fa-home.fa-lg
-              span.ms-2 ホーム
-          li.nav-item
-            = link_to categories_path, class: "nav-link #{'text-muted' unless current_page?(categories_path)}" do
-              i.fa-solid.fa-list.fa-lg
-              span.ms-2 カテゴリ
-          li.nav-item
-            = link_to products_path, class: "nav-link #{'text-muted' unless current_page?(products_path)}" do
-              i.fa-solid.fa-box.fa-lg
-              span.ms-2 商品
-          li.nav-item
-            = link_to icon_calculate_products_path, class: "nav-link #{'text-muted' unless current_page?(icon_calculate_products_path)}" do
-              i.fa-solid.fa-calculator.fa-lg
-              span.ms-2 商品計算
+    / ハンバーガーメニュー
+    .collapse.navbar-collapse#navbarNav data-navbar-target="collapse" data-action="show.bs.collapse->navbar#show hide.bs.collapse->navbar#hide"
+      ul.navbar-nav.w-100.py-2
+        li.nav-item.nav-item-custom class=("#{'active' if current_page?(root_path)}")
+          = link_to root_path, class: "nav-link d-flex align-items-center" do
+            i.fa-solid.fa-home.fa-lg.me-3
+            span ホーム
+        li.nav-item.nav-item-custom class=("#{'active' if current_page?(categories_path)}")
+          = link_to categories_path, class: "nav-link d-flex align-items-center" do
+            i.fa-solid.fa-list.fa-lg.me-3
+            span カテゴリ
+        li.nav-item.nav-item-custom class=("#{'active' if current_page?(products_path)}")
+          = link_to products_path, class: "nav-link d-flex align-items-center" do
+            i.fa-solid.fa-box.fa-lg.me-3
+            span 商品
+        li.nav-item.nav-item-custom class=("#{'active' if current_page?(icon_calculate_products_path)}")
+          = link_to icon_calculate_products_path, class: "nav-link d-flex align-items-center" do
+            i.fa-solid.fa-calculator.fa-lg.me-3
+            span 商品計算
+        li.nav-item.nav-item-custom class=("#{'active' if current_page?(product_calculation_histories_path)}")
+          = link_to product_calculation_histories_path, class: "nav-link d-flex align-items-center" do
+            i.fa-solid.fa-clock-rotate-left.fa-lg.me-3
+            span 計算履歴
+        li.nav-item.nav-item-custom class=("#{'active' if current_page?(import_csv_products_path)}")
+          = link_to import_csv_products_path, class: "nav-link d-flex align-items-center" do
+            i.fa-solid.fa-file-csv.fa-lg.me-3
+            span CSV出力
 
-  / 幅が大きいときの現在のデザイン
-  .d-none.d-lg-block
-    .col-12.mb-2
-      img src=asset_path("tas.png") alt="" class="img-fluid m-2 mt-4" style="width: 150px; height:100px;"
-    .col-12.mb-3
-      = link_to root_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(root_path)}" do
-        i.fa-solid.fa-home.fa-4x.mb-2
-        span.fw-bold ホーム
-    .col-12.mb-3
-      = link_to categories_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(categories_path)}" do
-        i.fa-solid.fa-list.fa-4x.mb-2
-        span.fw-bold カテゴリ
-    .col-12.mb-3
-      = link_to products_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(products_path)}" do
-        i.fa-solid.fa-box.fa-4x.mb-2
-        span.fw-bold 商品
-    .col-12.mb-3
-      = link_to icon_calculate_products_path, class: "link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-0-hover d-flex flex-column align-items-center #{'text-muted' unless current_page?(icon_calculate_products_path)}" do
-        i.fa-solid.fa-calculator.fa-4x.mb-2
-        span.fw-bold 商品計算
+  / デスクトップ用のサイドバー
+  .d-none.d-lg-flex.flex-column.flex-grow-1
+    / ロゴとユーザーメニュー
+    .d-flex.justify-content-between.align-items-center.mb-4
+      .logo-section
+        = link_to root_path, class: "text-decoration-none" do
+          img src=asset_path("tas.png") alt="Tasket" class="img-fluid" style="width: 120px; height: 80px; object-fit: contain;"
+      .dropdown
+        button.btn.btn-light.rounded-circle.p-2 type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="width: 45px; height: 45px; box-shadow: var(--shadow-sm);"
+          i.fa-solid.fa-user-circle.fa-lg style="color: var(--primary-color);"
+        ul.dropdown-menu.dropdown-menu-end[aria-labelledby="userMenu"]
+          li
+            = link_to destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: "dropdown-item" do
+              i.fa-solid.fa-right-from-bracket.me-2
+              | ログアウト
+    / ナビゲーション
+    nav.nav.flex-column.gap-2.flex-grow-1
+      = link_to root_path, class: "nav-item-custom #{'active' if current_page?(root_path)}" do
+        .nav-link.d-flex.align-items-center
+          .icon-wrapper.me-3 style="width: 40px; text-align: center;"
+            i.fa-solid.fa-home.fa-lg
+          span.fw-semibold ホーム
+      = link_to categories_path, class: "nav-item-custom #{'active' if current_page?(categories_path)}" do
+        .nav-link.d-flex.align-items-center
+          .icon-wrapper.me-3 style="width: 40px; text-align: center;"
+            i.fa-solid.fa-list.fa-lg
+          span.fw-semibold カテゴリ
+      = link_to products_path, class: "nav-item-custom #{'active' if current_page?(products_path)}" do
+        .nav-link.d-flex.align-items-center
+          .icon-wrapper.me-3 style="width: 40px; text-align: center;"
+            i.fa-solid.fa-box.fa-lg
+          span.fw-semibold 商品
+      = link_to icon_calculate_products_path, class: "nav-item-custom #{'active' if current_page?(icon_calculate_products_path)}" do
+        .nav-link.d-flex.align-items-center
+          .icon-wrapper.me-3 style="width: 40px; text-align: center;"
+            i.fa-solid.fa-calculator.fa-lg
+          span.fw-semibold 商品計算
+      = link_to product_calculation_histories_path, class: "nav-item-custom #{'active' if current_page?(product_calculation_histories_path)}" do
+        .nav-link.d-flex.align-items-center
+          .icon-wrapper.me-3 style="width: 40px; text-align: center;"
+            i.fa-solid.fa-clock-rotate-left.fa-lg
+          span.fw-semibold 計算履歴
+      = link_to import_csv_products_path, class: "nav-item-custom #{'active' if current_page?(import_csv_products_path)}" do
+        .nav-link.d-flex.align-items-center
+          .icon-wrapper.me-3 style="width: 40px; text-align: center;"
+            i.fa-solid.fa-file-csv.fa-lg
+          span.fw-semibold CSV出力

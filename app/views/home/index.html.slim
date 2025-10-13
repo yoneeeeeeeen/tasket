@@ -1,25 +1,45 @@
 - reminder_data = (@active_reminders || []).map { |r| { id: r.id, title: r.title, remind_at: r.remind_at.strftime('%Y-%m-%d %H:%M'), event_name: r.event.name } }
 
-.container.mt-2 data-controller="reminder-modal" data-reminder-modal-active-reminders-value="#{reminder_data.to_json}"
-  h1.text-center.mb-5 ホーム画面
-  
-  .row.row-cols-1.row-cols-md-3.g-4
+.container.mt-4 data-controller="reminder-modal" data-reminder-modal-active-reminders-value="#{reminder_data.to_json}"
+  .row.row-cols-1.row-cols-md-2.row-cols-xl-4.g-4
     .col
-      = link_to products_path, class: 'card h-100 text-decoration-none text-dark hover-darken', style: 'cursor:pointer;' do
-        .card-body.text-center.mt-3
-          i.fa-solid.fa-cart-shopping.fa-4x.mb-3
-          h5.card-title 商品管理
+      = link_to products_path, class: 'text-decoration-none' do
+        .card.h-100.border-0.home-card style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);'
+          .card-body.text-center.py-5.text-white
+            .icon-circle.mx-auto.mb-3 style='width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;'
+              i.fa-solid.fa-cart-shopping.fa-3x
+            h5.card-title.fw-bold.mb-0 商品管理
 
     .col
-      = link_to categories_path, class: 'card h-100 text-decoration-none text-dark hover-darken', style: 'cursor:pointer;' do
-        .card-body.text-center.mt-3
-          i.fa-solid.fa-list.fa-4x.mb-3
-          h5.card-title カテゴリ管理
+      = link_to categories_path, class: 'text-decoration-none' do
+        .card.h-100.border-0.home-card style='background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);'
+          .card-body.text-center.py-5.text-white
+            .icon-circle.mx-auto.mb-3 style='width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;'
+              i.fa-solid.fa-list.fa-3x
+            h5.card-title.fw-bold.mb-0 カテゴリ管理
 
     .col
-      = link_to icon_calculate_products_path, class: 'card h-100 text-decoration-none text-dark hover-darken', style: 'cursor:pointer;' do
-        .card-body.text-center.mt-3
-          i.fa-solid.fa-calculator.fa-4x.mb-3
-          h5.card-title 商品金額計算
+      = link_to icon_calculate_products_path, class: 'text-decoration-none' do
+        .card.h-100.border-0.home-card style='background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);'
+          .card-body.text-center.py-5.text-white
+            .icon-circle.mx-auto.mb-3 style='width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;'
+              i.fa-solid.fa-calculator.fa-3x
+            h5.card-title.fw-bold.mb-0 商品金額計算
+
+    .col
+      = link_to product_calculation_histories_path, class: 'text-decoration-none' do
+        .card.h-100.border-0.home-card style='background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);'
+          .card-body.text-center.py-5.text-white
+            .icon-circle.mx-auto.mb-3 style='width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;'
+              i.fa-solid.fa-clock-rotate-left.fa-3x
+            h5.card-title.fw-bold.mb-0 計算履歴
+
+    .col
+      = link_to import_csv_products_path, class: 'text-decoration-none' do
+        .card.h-100.border-0.home-card style='background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);'
+          .card-body.text-center.py-5.text-white
+            .icon-circle.mx-auto.mb-3 style='width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;'
+              i.fa-solid.fa-file-csv.fa-3x
+            h5.card-title.fw-bold.mb-0 CSV出力
 
 

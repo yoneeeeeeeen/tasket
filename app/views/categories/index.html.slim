@@ -1,22 +1,24 @@
-h1.text-center.mb-5.mt-5 カテゴリ管理
+h1.text-center.my-5 カテゴリ管理
 
 .container data-controller="category-frame"
   #flash_messages
 
-  .row.mb-5
-    .col-md-6.mb-5
-      .card
-        .card-header
-          h5 カテゴリ一覧
-        .card-body
+  .row.g-4.mb-5
+    .col-lg-7
+      .card.border-0 style='box-shadow: var(--shadow-md);'
+        .card-header.d-flex.align-items-center
+          i.fa-solid.fa-list.me-2
+          h5.mb-0.text-white カテゴリ一覧
+        .card-body style='max-height: 600px; overflow-y: auto;'
           #categories
             - @categories.each do |category|
               = render partial: "category", locals: { category: category }
 
-    .col-md-6
-      .card
-        .card-header
-          h5 カテゴリ作成/編集
+    .col-lg-5
+      .card.border-0 style='box-shadow: var(--shadow-md);'
+        .card-header.d-flex.align-items-center
+          i.fa-solid.fa-pen-to-square.me-2
+          h5.mb-0.text-white カテゴリ作成/編集
         .card-body
           = turbo_frame_tag "category_form" do
             = render "form", category: @category

@@ -1,7 +1,5 @@
 h1.text-center.my-5 商品計算画面
 
-= render 'products/icon_calculator_nav'
-
 .container.mt-5(data-controller="icon-calculator")
   .row.gy-3.align-items-end.mb-4
     .col-12.col-md-6
@@ -34,7 +32,6 @@ h1.text-center.my-5 商品計算画面
             button.btn.btn-outline-secondary(type="button" data-action="click->icon-calculator#clear")
               i.fas.fa-undo.me-1
               | 検索クリア
-            = link_to "PDF出力", "#", class: "btn btn-primary", data: { action: "click->icon-calculator#exportPdf" }
 
   .row
     .col-12
@@ -63,8 +60,8 @@ h1.text-center.my-5 商品計算画面
           .fw-bold.flex-grow-1 選択した商品
           .d-flex.align-items-center.gap-3
             .fw-bold 合計:
-            .fs-4.fw-bold.text-success(data-icon-calculator-target="total") 0
-            span.fs-5.text-success 円
+            .fs-4.fw-bold.text-light(data-icon-calculator-target="total") 0
+            span.fs-5.text-light 円
         .card-body
           / md以上: テーブル表示
           .d-none.d-md-block
