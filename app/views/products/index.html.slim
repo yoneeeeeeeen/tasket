@@ -1,6 +1,6 @@
 h1.text-center.my-5 商品一覧
 
-.card.mb-4.border-0 style='box-shadow: var(--shadow-md);'
+.card.mb-4.border-0 style='box-shadow: var(--shadow-md); position: relative; z-index: auto;'
   .card-body.p-4
     = search_form_for @q do |f|
       .row.g-3.align-items-end
@@ -10,31 +10,9 @@ h1.text-center.my-5 商品一覧
             | 商品名で検索
           = f.search_field :name_cont, class: "form-control", placeholder: "商品名を入力..."
         .col-12.col-md-6.col-lg-8
-          .d-flex.flex-wrap.gap-2.justify-content-md-end.align-items-end.h-100
+          .d-flex.flex-wrap.gap-2.justify-content-md-end.align-items-center
             = f.submit "検索", class: "btn btn-primary px-4"
             = link_to "リセット", products_path, class: "btn btn-outline-secondary px-4"
-            .dropdown
-              button.btn.btn-outline-secondary.dropdown-toggle.px-4 type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                i.fa-solid.fa-sort.me-2
-                | ソート
-              ul.dropdown-menu
-                li
-                  = link_to products_path(sort: "name", direction: "asc"), class: "dropdown-item", data: { turbo_frame: "products_list" } do
-                    i.fa-solid.fa-arrow-up.me-2
-                    | 名前(昇順)
-                li
-                  = link_to products_path(sort: "name", direction: "desc"), class: "dropdown-item", data: { turbo_frame: "products_list" } do
-                    i.fa-solid.fa-arrow-down.me-2
-                    | 名前(降順)
-                li.dropdown-divider
-                li
-                  = link_to products_path(sort: "price", direction: "asc"), class: "dropdown-item", data: { turbo_frame: "products_list" } do
-                    i.fa-solid.fa-arrow-up.me-2
-                    | 価格(昇順)
-                li
-                  = link_to products_path(sort: "price", direction: "desc"), class: "dropdown-item", data: { turbo_frame: "products_list" } do
-                    i.fa-solid.fa-arrow-down.me-2
-                    | 価格(降順)
 
 .d-flex.justify-content-between.align-items-center.mb-4
   .d-flex.gap-2
@@ -44,6 +22,28 @@ h1.text-center.my-5 商品一覧
     = link_to products_path(format: :csv), class: "btn btn-outline-secondary" do
       i.fa-solid.fa-file-csv.me-2
       | CSV出力
+    .dropdown
+      button.btn.btn-outline-secondary.dropdown-toggle.px-4 type="button" data-bs-toggle="dropdown" aria-expanded="false"
+        i.fa-solid.fa-sort.me-2
+        | ソート
+      ul.dropdown-menu.dropdown-menu-end
+        li
+          = link_to products_path(sort: "name", direction: "asc"), class: "dropdown-item", data: { turbo_frame: "products_list" } do
+            i.fa-solid.fa-arrow-up.me-2
+            | 名前(昇順)
+        li
+          = link_to products_path(sort: "name", direction: "desc"), class: "dropdown-item", data: { turbo_frame: "products_list" } do
+            i.fa-solid.fa-arrow-down.me-2
+            | 名前(降順)
+        li.dropdown-divider
+        li
+          = link_to products_path(sort: "price", direction: "asc"), class: "dropdown-item", data: { turbo_frame: "products_list" } do
+            i.fa-solid.fa-arrow-up.me-2
+            | 価格(昇順)
+        li
+          = link_to products_path(sort: "price", direction: "desc"), class: "dropdown-item", data: { turbo_frame: "products_list" } do
+            i.fa-solid.fa-arrow-down.me-2
+            | 価格(降順)
 
 .container data-controller="product-frame"
   = paginate @products, theme: "bootstrap-5"

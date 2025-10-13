@@ -8,7 +8,7 @@ h1.text-center.my-5 カテゴリ管理
       .card.border-0 style='box-shadow: var(--shadow-md);'
         .card-header.d-flex.align-items-center
           i.fa-solid.fa-list.me-2
-          h5.mb-0 カテゴリ一覧
+          h5.mb-0.text-white カテゴリ一覧
         .card-body style='max-height: 600px; overflow-y: auto;'
           #categories
             - @categories.each do |category|
@@ -18,7 +18,7 @@ h1.text-center.my-5 カテゴリ管理
       .card.border-0 style='box-shadow: var(--shadow-md);'
         .card-header.d-flex.align-items-center
           i.fa-solid.fa-pen-to-square.me-2
-          h5.mb-0 カテゴリ作成/編集
+          h5.mb-0.text-white カテゴリ作成/編集
         .card-body
           = turbo_frame_tag "category_form" do
             = render "form", category: @category
