@@ -1,0 +1,12 @@
+tr id="company_#{company.id}"
+  td.align-middle
+    i.fa-solid.fa-building.text-primary.me-2
+    strong= company.name
+  td.align-middle.text-center
+    span.badge.bg-info.text-dark= company.users.count
+  td.align-middle.text-center
+    .btn-group role="group"
+      = link_to edit_company_path(company), class: "btn btn-sm btn-outline-primary", "data-turbo-frame": "modal", title: "編集" do
+        i.fa-solid.fa-edit
+      = link_to company_path(company), method: :delete, data: { turbo_method: :delete, turbo_confirm: "本当に削除してもよろしいですか？" }, class: "btn btn-sm btn-outline-danger", title: "削除" do
+        i.fa-solid.fa-trash

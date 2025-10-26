@@ -1,0 +1,8 @@
+.modal-dialog role="document"
+  .modal-content
+    .modal-header
+      h5.modal-title 新規企業を追加
+      button.close type="button" data-dismiss="modal" aria-label="Close"
+        span aria-hidden="true" &times;
+    .modal-body
+      = render "form", company: @company

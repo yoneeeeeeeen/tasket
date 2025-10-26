@@ -1,0 +1,13 @@
+#company_form
+  = form_with model: company, local: true do |form|
+    - if company.errors.any?
+      .alert.alert-danger
+        h4 = "#{pluralize(company.errors.count, 'エラー')}が発生しました:"
+        ul
+          - company.errors.full_messages.each do |message|
+            li = message
+    .form-group
+      = form.label :name, "企業名"
+      = form.text_field :name, class: "form-control"
+    .form-group
+      = form.submit class: "btn btn-primary"

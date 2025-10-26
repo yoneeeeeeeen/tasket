@@ -1,0 +1,22 @@
+.container.mt-4
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1.mb-0
+      i.fa-solid.fa-building.me-2
+      | 企業マスタ
+    = link_to new_company_path, class: "btn btn-primary", "data-turbo-frame": "modal" do
+      i.fa-solid.fa-plus.me-2
+      | 新規企業を追加
+
+  .card.shadow-sm
+    .card-body
+      #companies-list
+        table.table.table-hover.mb-0
+          thead.table-light
+            tr
+              th.fw-bold 企業名
+              th.fw-bold 登録ユーザー数
+              th.fw-bold.text-center アクション
+          tbody#companies-table
+            = render partial: "company", collection: @companies, as: :company
+
+#modal data-turbo-frame="modal"
