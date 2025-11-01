@@ -26,7 +26,7 @@ class ProductsController < ApplicationController
       format.xlsx do
         response.headers["Content-Disposition"] = 'attachment; filename="products.xlsx"'
       end
-      format.csv { send_data generate_csv(@products), filename: "商品一覧_#{Time.zone.now.strftime('%Y%m%d')}.csv" }
+      format.csv { send_data generate_csv(@products), filename: "商品一覧_#{Time.zone.now.strftime('%Y%m%d')}.csv", type: "text/csv; charset=utf-8" }
       format.json {
         latest_update = @products.maximum(:updated_at)&.iso8601 || Time.current.iso8601
         render json: { last_update: latest_update, count: @products.count }
@@ -159,12 +159,13 @@ class ProductsController < ApplicationController
   end
 
   def export_empty_csv
-    csv_data = CSV.generate(headers: true) do |csv|
+    csv_data = CSV.generate(headers: true, encoding: 'UTF-8') do |csv|
       # ヘッダー行を追加
       csv << ["商品名", "価格", "在庫数", "カテゴリ"]
     end
 
-    send_data csv_data, filename: "空のテンプレート.csv", type: "text/csv"
+    # UTF-8 BOMを追加してExcelで正しく表示されるようにする
+    send_data "\uFEFF" + csv_data, filename: "空のテンプレート.csv", type: "text/csv; charset=utf-8"
   end
 
   def import_csv
@@ -246,7 +247,7 @@ class ProductsController < ApplicationController
   end
 
   def generate_csv(products)
-    CSV.generate(headers: true) do |csv|
+    csv_data = CSV.generate(headers: true, encoding: 'UTF-8') do |csv|
       # ヘッダー行を追加
       csv << ["商品ID", "商品名", "価格", "在庫数", "カテゴリ"]
 
@@ -261,5 +262,8 @@ class ProductsController < ApplicationController
         ]
       end
     end
+    
+    # UTF-8 BOMを追加してExcelで正しく表示されるようにする
+    "\uFEFF" + csv_data
   end
 end
