@@ -160,7 +160,7 @@ class ProductsController < ApplicationController
 
   def export_empty_csv
     csv_data = CSV.generate(headers: true, encoding: 'UTF-8') do |csv|
-      # ヘッダー行を追加
+      # ヘッダー行を追加（商品IDは自動採番のため削除）
       csv << ["商品名", "価格", "在庫数", "カテゴリ"]
     end
 
@@ -207,7 +207,9 @@ class ProductsController < ApplicationController
             price: row["価格"].to_f,
             stock_quantity: row["在庫数"].to_i,
             description: row["説明文"].presence || "説明がありません",
-            category: Category.find_or_create_by(name: row["カテゴリ"])
+            category: Category.find_or_create_by(name: row["カテゴリ"]),
+            user_id: current_user.id,
+            company_id: current_user.company_id
           )
 
           unless product.save
