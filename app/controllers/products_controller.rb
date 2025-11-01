@@ -6,7 +6,12 @@ class ProductsController < ApplicationController
 
   def index
     @q = Product.ransack(params[:q])
-    @products = @q.result.includes(:category).page(params[:page]).per(10).where(discarded_at: nil, user_id: current_user.id)
+    base_query = if current_user.superuser?
+      @q.result.includes(:category)
+    else
+      @q.result.includes(:category).where(company_id: current_user.company_id)
+    end
+    @products = base_query.page(params[:page]).per(10).where(discarded_at: nil)
 
     # 並び替えの処理
     if params[:sort].present?
@@ -43,6 +48,7 @@ class ProductsController < ApplicationController
   def create
     @product = Product.new(product_params)
     @product.user = current_user
+    @product.company_id = current_user.company_id  # セキュリティのため強制的に設定
 
     if @product.save
       respond_to do |format|
@@ -66,8 +72,6 @@ class ProductsController < ApplicationController
   end
 
   def edit
-    @product = Product.find(params[:id])
-
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace("product_details_#{@product.id}", partial: "form", locals: { product: @product })
@@ -77,7 +81,15 @@ class ProductsController < ApplicationController
   end
 
   def update
-    if @product.update(product_params)
+    # セキュリティのため、company_idが変更されないようにする
+    product_update_params = product_params.except(:company_id)
+    
+    # 商品の企業IDが空の場合、更新者の企業IDを設定
+    if @product.company_id.blank? && current_user.company_id.present?
+      @product.company_id = current_user.company_id
+    end
+    
+    if @product.update(product_update_params)
       respond_to do |format|
         format.turbo_stream {
           render turbo_stream: [
@@ -103,7 +115,6 @@ class ProductsController < ApplicationController
   end
 
   def destroy
-    @product = Product.find(params[:id])
     @product.discard # 論理削除
 
     respond_to do |format|
@@ -129,13 +140,21 @@ class ProductsController < ApplicationController
   end
 
   def calculate
-    @products = Product.includes(:category).where(user: current_user, discarded_at: nil)
+    if current_user.superuser?
+      @products = Product.includes(:category).where(discarded_at: nil)
+    else
+      @products = Product.includes(:category).where(company_id: current_user.company_id, discarded_at: nil)
+    end
     # 念のため@categoriesを明示的に設定
     @categories ||= Category.where(user: current_user)
   end
 
   def icon_calculate
-    @products = Product.includes(:category).where(user: current_user, discarded_at: nil)
+    if current_user.superuser?
+      @products = Product.includes(:category).where(discarded_at: nil)
+    else
+      @products = Product.includes(:category).where(company_id: current_user.company_id, discarded_at: nil)
+    end
     @categories ||= Category.where(user: current_user)
   end
 
@@ -215,11 +234,15 @@ class ProductsController < ApplicationController
   end
 
   def set_product
-    @product = current_user.products.find(params[:id])
+    if current_user.superuser?
+      @product = Product.find(params[:id])
+    else
+      @product = Product.where(company_id: current_user.company_id).find(params[:id])
+    end
   end
 
   def product_params
-    params.require(:product).permit(:name, :description, :price, :stock_quantity, :category_id)
+    params.require(:product).permit(:name, :description, :price, :stock_quantity, :category_id, :company_id)
   end
 
   def generate_csv(products)

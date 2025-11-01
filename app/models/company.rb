@@ -4,4 +4,5 @@ class Company < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
   has_many :users, dependent: :nullify
+  has_many :products, dependent: :nullify
 end
