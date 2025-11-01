@@ -1,8 +1,9 @@
-.row.border-bottom.py-2[data-user-id="#{user.id}"]
+.row.border-bottom.py-2 id="user_#{user.id}"
   .col-2 = user.id
   .col-2 = user.name || "未設定"
-  .col-3 = user.email
-  .col-2 = t("user.roles.#{user.role}")
+  .col-2 = user.email
+  .col-2 = user.company&.name || "未割当"
+  .col-1 = t("user.roles.#{user.role}")
   .col-3
     = link_to "編集", edit_user_path(user), data: { turbo_frame: "user_form" }, class: "btn btn-secondary btn-sm mx-1"
     = link_to "削除", user_path(user), data: { turbo_method: :delete, confirm: "本当に削除しますか？" }, class: "btn btn-danger"

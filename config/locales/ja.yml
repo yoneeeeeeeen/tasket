@@ -10,12 +10,25 @@ ja:
   activerecord:
     models:
       product: 商品
+      company: 企業
+      category: カテゴリ
+      user: ユーザー
     attributes:
       product:
         name: 商品名
         price: 価格
         stock_quantity: 在庫数
         description: 説明文
+      company:
+        name: 企業名
+      category:
+        name: カテゴリ名
+      user:
+        name: 名前
+        email: メールアドレス
+        password: パスワード
+        role: 権限
+        company: 企業
     errors:
       models:
         product:
@@ -33,6 +46,11 @@ ja:
               not_an_integer: は整数で入力してください
             description:
               blank: 説明を入力してください
+        company:
+          attributes:
+            name:
+              blank: "を入力してください"
+              taken: "は既に使用されています"
         category:
           attributes:
             name:
@@ -40,3 +58,7 @@ ja:
   errors:
     messages:
       blank: "を入力してください"
+      taken: "は既に使用されています"
+      not_a_number: "は数値で入力してください"
+      greater_than_or_equal_to: "は%{count}以上の値を入力してください"
+      not_an_integer: "は整数で入力してください"

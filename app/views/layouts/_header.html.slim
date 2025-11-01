@@ -44,6 +44,17 @@
           = link_to import_csv_products_path, class: "nav-link d-flex align-items-center" do
             i.fa-solid.fa-file-csv.fa-lg.me-3
             span CSV出力
+        - if current_user&.superuser?
+          li.nav-item.nav-item-custom.mt-3 style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1rem;"
+            p.text-muted.small.px-3.mb-2 管理者メニュー
+          li.nav-item.nav-item-custom class=("#{'active' if current_page?(companies_path)}")
+            = link_to companies_path, class: "nav-link d-flex align-items-center" do
+              i.fa-solid.fa-building.fa-lg.me-3
+              span 企業マスタ
+          li.nav-item.nav-item-custom class=("#{'active' if current_page?(users_path)}")
+            = link_to users_path, class: "nav-link d-flex align-items-center" do
+              i.fa-solid.fa-users.fa-lg.me-3
+              span ユーザーマスタ
 
   / デスクトップ用のサイドバー
   .d-none.d-lg-flex.flex-column.flex-grow-1
@@ -92,3 +103,17 @@
           .icon-wrapper.me-3 style="width: 40px; text-align: center;"
             i.fa-solid.fa-file-csv.fa-lg
           span.fw-semibold CSV出力
+      - if current_user&.superuser?
+        .border-top.my-3 style="border-color: rgba(0,0,0,0.1);"
+        .px-3.mb-2
+          small.text-muted.fw-bold 管理者メニュー
+        = link_to companies_path, class: "nav-item-custom #{'active' if current_page?(companies_path)}" do
+          .nav-link.d-flex.align-items-center
+            .icon-wrapper.me-3 style="width: 40px; text-align: center;"
+              i.fa-solid.fa-building.fa-lg
+            span.fw-semibold 企業マスタ
+        = link_to users_path, class: "nav-item-custom #{'active' if current_page?(users_path)}" do
+          .nav-link.d-flex.align-items-center
+            .icon-wrapper.me-3 style="width: 40px; text-align: center;"
+              i.fa-solid.fa-users.fa-lg
+            span.fw-semibold ユーザーマスタ

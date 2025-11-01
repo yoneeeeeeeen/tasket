@@ -1,20 +1,25 @@
-.text-end.m-3
-  = form_with url: destroy_user_session_path, method: :delete, class: "d-inline" do
-    = button_to "ログアウト", nil, data: { turbo_confirm: "ログアウトしますか？" }, class: "btn btn-danger"
-.container
-  h1.text-center.my-4 ユーザー管理画面
-  .text-end.mb-3
-    = link_to "新規作成", new_user_path, data: { turbo_frame: "user_form" }, class: "btn btn-primary"
+.container.mt-4
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1.mb-0
+      i.fa-solid.fa-users.me-2
+      | ユーザーマスタ
+    = link_to new_user_path, data: { turbo_frame: "user_form" }, class: "btn btn-primary" do
+      i.fa-solid.fa-plus.me-2
+      | 新規ユーザーを追加
 
-  .row.font-weight-bold.py-2
-    .col-2 ID
-    .col-2 名前
-    .col-3 Email
-    .col-2 権限
-    .col-3 操作
+  .card.shadow-sm
+    .card-body
+      .table-responsive
+        .row.font-weight-bold.py-2.bg-light.rounded
+          .col-2 ID
+          .col-2 名前
+          .col-2 Email
+          .col-2 企業
+          .col-1 権限
+          .col-3 操作
 
-  #users
-    - @users.each do |user|
-      = render partial: "user", locals: { user: user }
+        #users
+          - @users.each do |user|
+            = render partial: "user", locals: { user: user }
 
   turbo-frame#user_form

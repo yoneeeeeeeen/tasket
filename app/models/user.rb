@@ -6,6 +6,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   before_validation :set_default_role, on: :create
+  before_validation :update_password_requirement, on: :update
   after_create :initialize_menu_settings
 
   ROLES = { superuser: "管理者", user: "一般" }.freeze
@@ -13,6 +14,8 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :name, presence: true
   validates :role, inclusion: { in: ["superuser", "user"] }
+
+  belongs_to :company, optional: true
 
   has_many :categories, dependent: :destroy
   has_many :products, dependent: :destroy
@@ -65,4 +68,12 @@ class User < ApplicationRecord
   def set_default_role
     self.role ||= "user"
   end
+
+  # 更新時にパスワードが空の場合、バリデーションを無効にする
+  def update_password_requirement
+    if password.blank? && password_confirmation.blank?
+      self.password = nil
+    end
+  end
 end
+

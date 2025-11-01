@@ -1,0 +1,29 @@
+h1 = @company.name
+
+.details
+  .row
+    .col-md-6
+      h3 企業情報
+      p
+        strong 企業名:
+        = @company.name
+      p
+        strong 登録ユーザー数:
+        = @company.users.count
+      p
+        strong 登録日:
+        = @company.created_at.strftime("%Y年%m月%d日")
+
+    .col-md-6
+      h3 登録ユーザー一覧
+      - if @company.users.any?
+        ul.list-group
+          - @company.users.each do |user|
+            li.list-group-item = "#{user.name} (#{user.email})"
+      - else
+        p.text-muted このまだ企業に登録されたユーザーがいません。
+
+.actions
+  = link_to "編集", edit_company_path(@company), class: "btn btn-info"
+  = link_to "削除", company_path(@company), method: :delete, data: { confirm: "本当に削除してもよろしいですか？" }, class: "btn btn-danger"
+  = link_to "企業一覧へ戻る", companies_path, class: "btn btn-secondary"
