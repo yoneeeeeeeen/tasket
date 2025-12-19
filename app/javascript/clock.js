@@ -34,9 +34,12 @@ export function initializeClock() {
   setInterval(updateClock, 1000);
 }
 
-// DOMContentLoadedで自動実行
-document.addEventListener('DOMContentLoaded', () => {
+// DOMContentLoadedとturbo:loadで自動実行
+function initClockIfExists() {
   if (document.getElementById('stylish-clock')) {
     initializeClock();
   }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initClockIfExists);
+document.addEventListener('turbo:load', initClockIfExists);
