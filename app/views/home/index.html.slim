@@ -1,6 +1,41 @@
 - reminder_data = (@active_reminders || []).map { |r| { id: r.id, title: r.title, remind_at: r.remind_at.strftime('%Y-%m-%d %H:%M'), event_name: r.event.name } }
 
 .container.mt-4 data-controller="reminder-modal" data-reminder-modal-active-reminders-value="#{reminder_data.to_json}"
+  / おしゃれな時計セクション
+  .row.mb-4
+    .col-12
+      .card.border-0.shadow-sm style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);'
+        .card-body.py-4
+          .d-flex.justify-content-center.align-items-center
+            #stylish-clock.text-center
+              .digital-time.text-white.mb-2 style='font-size: 4rem; font-weight: 300; letter-spacing: 0.1em; font-family: "Segoe UI", sans-serif;'
+                span#hours 00
+                span.mx-2 = ":"
+                span#minutes 00
+                span.mx-2 = ":"
+                span#seconds 00
+              .date-display.text-white style='font-size: 1.2rem; opacity: 0.9; font-weight: 300;'
+                span#date-info
+              .analog-indicator.mt-3.d-flex.justify-content-center.gap-2
+                .time-dot style='width: 12px; height: 12px; background: rgba(255,255,255,0.7); border-radius: 50%; animation: pulse 2s infinite;'
+                .time-dot style='width: 12px; height: 12px; background: rgba(255,255,255,0.7); border-radius: 50%; animation: pulse 2s infinite 0.3s;'
+                .time-dot style='width: 12px; height: 12px; background: rgba(255,255,255,0.7); border-radius: 50%; animation: pulse 2s infinite 0.6s;'
+
+  css:
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+
+    #stylish-clock {
+      transition: all 0.3s ease;
+    }
   .row.row-cols-1.row-cols-md-2.row-cols-xl-4.g-4
     .col
       = link_to products_path, class: 'text-decoration-none' do
