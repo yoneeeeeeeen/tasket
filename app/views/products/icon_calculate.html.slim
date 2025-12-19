@@ -32,28 +32,7 @@ h1.text-center.my-5 商品計算画面
             button.btn.btn-outline-secondary(type="button" data-action="click->icon-calculator#clear")
               i.fas.fa-undo.me-1
               | 検索クリア
-
-  .row
-    .col-12
-      .icon-grid(data-icon-calculator-target="grid")
-        - @products.each do |product|
-          .card.shadow-sm(data-name=product.name data-price=product.price data-id=product.id data-category=(product.category&.name || "未分類"))
-            .card-body.text-center
-              -# 商品アイコン（なければデフォルト）
-              - begin
-                - if product.respond_to?(:image) && product.image.attached?
-                  = image_tag product.image, class: "img-fluid rounded", alt: product.name
-                - else
-                  i.fas.fa-box.fa-3x.text-secondary
-              - rescue
-                i.fas.fa-box.fa-3x.text-secondary
-              .mt-2.fw-bold= product.name
-              .text-success.fw-bold= number_to_currency(product.price, unit: "¥", precision: 0)
-              button.btn.btn-sm.btn-primary.mt-2(type="button" data-action="click->icon-calculator#add" data-id=product.id data-name=product.name data-price=product.price)
-                i.fas.fa-plus.me-1
-                | 追加
-
-  .row.mt-4
+  .row.my-4
     .col-12
       .card
         .card-header.d-flex.flex-wrap.gap-2.justify-content-between.align-items-center
@@ -84,3 +63,24 @@ h1.text-center.my-5 商品計算画面
         .card-footer.text-end.d-flex.flex-wrap.gap-2
           button.btn.btn-outline-danger.me-2(type="button" data-action="click->icon-calculator#clearCart") クリア
           = button_to "保存", "#", method: :post, class: "btn btn-success", data: { action: "click->icon-calculator#save" }
+
+  .row
+    .col-12
+      .icon-grid(data-icon-calculator-target="grid")
+        - @products.each do |product|
+          .card.shadow-sm(data-name=product.name data-price=product.price data-id=product.id data-category=(product.category&.name || "未分類"))
+            .card-body.text-center
+              -# 商品アイコン（なければデフォルト）
+              - begin
+                - if product.respond_to?(:image) && product.image.attached?
+                  = image_tag product.image, class: "img-fluid rounded", alt: product.name
+                - else
+                  i.fas.fa-box.fa-3x.text-secondary
+              - rescue
+                i.fas.fa-box.fa-3x.text-secondary
+              .mt-2.fw-bold= product.name
+              .text-success.fw-bold= number_to_currency(product.price, unit: "¥", precision: 0)
+              button.btn.btn-sm.btn-primary.mt-2(type="button" data-action="click->icon-calculator#add" data-id=product.id data-name=product.name data-price=product.price)
+                i.fas.fa-plus.me-1
+                | 追加
+
