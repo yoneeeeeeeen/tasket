@@ -20,12 +20,12 @@ html
     link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
   body
+    / フラッシュメッセージの表示
+    - if flash[:alert]
+      .alert.alert-danger.position-fixed.top-0.start-50.translate-middle-x.mt-3 role="alert" style="z-index: 9999; max-width: 600px; width: 90%;"
+        = flash[:alert]
+    - if flash[:notice]
+      .alert.alert-success.position-fixed.top-0.start-50.translate-middle-x.mt-3 role="alert" style="z-index: 9999; max-width: 600px; width: 90%;"
+        = flash[:notice]
     .layout-wrapper.d-flex
-      / フラッシュメッセージの表示
-      - if flash[:alert]
-        .alert.alert-danger role="alert"
-          = flash[:alert]
-      - if flash[:notice]
-        .alert.alert-success role="alert"
-          = flash[:notice]
       = yield
