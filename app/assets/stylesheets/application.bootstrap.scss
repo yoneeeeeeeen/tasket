@@ -8,14 +8,14 @@
   --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   --accent-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  
+
   --primary-color: #667eea;
   --secondary-color: #764ba2;
   --accent-color: #4facfe;
   --text-primary: #2d3748;
   --text-secondary: #718096;
-  --bg-light: #f7fafc;
-  --bg-card: #ffffff;
+  --bg-light: #f5f1e8;
+  --bg-card: #faf8f3;
   --border-color: #e2e8f0;
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -26,7 +26,7 @@
 /* ナビゲーションバーのスタイル */
 .header-wrapper {
   width: 240px;
-  background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
+  background: linear-gradient(180deg, #faf8f3 0%, #f5f1e8 100%);
   border-right: none;
   box-sizing: border-box;
   box-shadow: var(--shadow-md);
@@ -179,7 +179,7 @@
     left: 0;
     right: 0;
     z-index: 1030;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
+    background: linear-gradient(180deg, #faf8f3 0%, #f5f1e8 100%);
     overflow-y: visible;
   }
 
