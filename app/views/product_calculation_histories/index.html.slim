@@ -1,80 +1,93 @@
-h1.text-center.my-5 商品計算履歴一覧
-
-.container.mt-4
-  .row.mb-3
-    .col-12.d-flex.justify-content-between.align-items-center
-      h3.mb-0
-        i.fas.fa-history.me-2
-        | 保存した計算履歴
-      = link_to icon_calculate_products_path, class: "btn btn-primary" do
-        i.fas.fa-calculator.me-1
-        | 商品計算に戻る
+.container.mt-4.mb-5
+  / ヘッダーセクション
+  .row.mb-4
+    .col-12
+      .d-flex.justify-content-between.align-items-center.flex-wrap.gap-3
+        div
+          h1.mb-2 style="color: var(--text-primary); font-weight: 700;"
+            i.fas.fa-history.me-3 style="color: var(--primary-color);"
+            | 計算履歴
+          p.text-muted.mb-0.fs-6 保存した商品計算の履歴を管理できます
+        = link_to icon_calculate_products_path, class: "btn btn-primary btn-lg shadow-sm", style: "border-radius: 12px;" do
+          i.fas.fa-calculator.me-2
+          | 新規計算
 
   - if @histories.any?
-    / デスクトップ: テーブル表示
-    .row.d-none.d-lg-block
-      .col-12
-        .table-responsive
-          table.table.table-hover.align-middle
-            thead.table-primary
-              tr
-                th.text-center タイトル
-                th.text-center 合計金額
-                th.text-center 商品数
-                th.text-center 保存日時
-                th.text-center 操作
-            tbody
-              - @histories.each do |history|
-                tr
-                  td
-                    = link_to history.title, product_calculation_history_path(history), class: "text-decoration-none fw-bold"
-                  td.text-end.text-success.fw-bold
-                    = number_to_currency(history.total_amount, unit: "¥", precision: 0)
-                  td.text-center
-                    span.badge.bg-info.text-dark
-                      = history.items.count
-                      | 品目
-                  td.text-center
-                    = history.saved_at.strftime('%Y年%m月%d日 %H:%M')
-                  td.text-center
-                    .d-flex.gap-2.justify-content-center
-                      = link_to product_calculation_history_path(history), class: "btn btn-sm btn-outline-primary" do
-                        i.fas.fa-eye.me-1
-                        | 詳細
-                      = button_to product_calculation_history_path(history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-sm btn-outline-danger" do
-                        i.fas.fa-trash.me-1
-                        | 削除
+    / 統計情報カード
+    .row.mb-4
+      .col-md-4.mb-3
+        .card.border-0.shadow-sm.h-100(style="border-radius: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);")
+          .card-body.text-white.text-center.py-4
+            i.fas.fa-file-invoice.fa-2x.mb-3(style="opacity: 0.9;")
+            h3.mb-1.fw-bold = @histories.total_count
+            p.mb-0.text-white-50 総履歴数
+      .col-md-4.mb-3
+        .card.border-0.shadow-sm.h-100(style="border-radius: 16px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);")
+          .card-body.text-white.text-center.py-4
+            i.fas.fa-shopping-basket.fa-2x.mb-3(style="opacity: 0.9;")
+            h3.mb-1.fw-bold = @histories.sum { |h| h.items.count }
+            p.mb-0.text-white-50 総商品数
+      .col-md-4.mb-3
+        .card.border-0.shadow-sm.h-100(style="border-radius: 16px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);")
+          .card-body.text-white.text-center.py-4
+            i.fas.fa-yen-sign.fa-2x.mb-3(style="opacity: 0.9;")
+            h3.mb-1.fw-bold = number_to_currency(@histories.sum(&:total_amount), unit: "¥", precision: 0)
+            p.mb-0.text-white-50 総計算額
 
-    / タブレット・モバイル: カード表示
-    .row.d-lg-none
-      .col-12
-        - @histories.each do |history|
-          .card.mb-3.shadow-sm
-            .card-body
-              .d-flex.justify-content-between.align-items-start.mb-2
-                h5.card-title.mb-0.flex-grow-1
-                  = link_to history.title, product_calculation_history_path(history), class: "text-decoration-none"
-                span.badge.bg-info.text-dark.ms-2
+    / 履歴カードグリッド
+    .row.g-4
+      - @histories.each do |history|
+        .col-12.col-lg-6
+          .card.border-0.shadow-sm.h-100.position-relative(style="border-radius: 16px; transition: all 0.3s ease; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';")
+            / カラーアクセント
+            .position-absolute.top-0.start-0.w-100(style="height: 6px; background: linear-gradient(90deg, var(--primary-color), var(--accent-color));")
+
+            .card-body.p-4
+              / ヘッダー部分
+              .d-flex.justify-content-between.align-items-start.mb-3
+                div.flex-grow-1
+                  = link_to product_calculation_history_path(history), class: "text-decoration-none" do
+                    h5.mb-2.fw-bold(style="color: var(--text-primary);")
+                      i.fas.fa-file-alt.me-2(style="color: var(--primary-color);")
+                      = history.title
+                  .d-flex.align-items-center.text-muted.small
+                    i.fas.fa-clock.me-2
+                    = history.saved_at.strftime('%Y年%m月%d日 %H:%M')
+                span.badge.rounded-pill(style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); padding: 8px 16px; font-size: 0.9rem;")
+                  i.fas.fa-box.me-1
                   = history.items.count
                   | 品目
-              .row.g-2.mb-3
-                .col-6
-                  .text-muted.small 合計金額
-                  .text-success.fw-bold.fs-5
+
+              / 金額表示
+              .mb-4.p-3.rounded(style="background: linear-gradient(135deg, #e0f7fa 0%, #e1f5fe 100%);")
+                .d-flex.justify-content-between.align-items-center
+                  span.text-muted.fw-500
+                    i.fas.fa-calculator.me-2
+                    | 合計金額
+                  span.fw-bold.fs-4(style="color: #00897b;")
                     = number_to_currency(history.total_amount, unit: "¥", precision: 0)
-                .col-6
-                  .text-muted.small 保存日時
-                  .text-dark
-                    = history.saved_at.strftime('%Y/%m/%d')
-                    br
-                    = history.saved_at.strftime('%H:%M')
-              .d-flex.gap-2.flex-wrap
-                = link_to product_calculation_history_path(history), class: "btn btn-sm btn-outline-primary flex-fill" do
-                  i.fas.fa-eye.me-1
-                  | 詳細
-                = button_to product_calculation_history_path(history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-sm btn-outline-danger flex-fill" do
-                  i.fas.fa-trash.me-1
-                  | 削除
+
+              / 商品プレビュー
+              - if history.items.any?
+                .mb-3
+                  .text-muted.small.mb-2
+                    i.fas.fa-list.me-1
+                    | 含まれる商品
+                  .d-flex.flex-wrap.gap-2
+                    - history.items.limit(3).each do |item|
+                      span.badge.bg-light.text-dark(style="padding: 6px 12px; border: 1px solid #dee2e6;")
+                        = item.product.name
+                    - if history.items.count > 3
+                      span.badge.bg-light.text-muted(style="padding: 6px 12px; border: 1px solid #dee2e6;")
+                        | +#{history.items.count - 3}件
+
+              / アクションボタン
+              .d-flex.gap-2.mt-3
+                = link_to product_calculation_history_path(history), class: "btn btn-outline-primary flex-grow-1", style: "border-radius: 10px;" do
+                  i.fas.fa-eye.me-2
+                  | 詳細を見る
+                = button_to product_calculation_history_path(history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-outline-danger", style: "border-radius: 10px;" do
+                  i.fas.fa-trash-alt
 
     .row.mt-4
       .col-12.d-flex.justify-content-center
@@ -82,10 +95,12 @@ h1.text-center.my-5 商品計算履歴一覧
   - else
     .row
       .col-12
-        .alert.alert-info.text-center
-          i.fas.fa-info-circle.me-2
-          | まだ保存された計算履歴がありません。商品計算画面で商品を選択して保存してください。
-          .mt-3
-            = link_to icon_calculate_products_path, class: "btn btn-primary" do
-              i.fas.fa-calculator.me-1
-              | 商品計算を始める
+        .card.border-0.shadow-sm.text-center.py-5(style="border-radius: 20px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);")
+          .card-body.py-5
+            .mb-4
+              i.fas.fa-inbox.fa-4x(style="color: var(--primary-color); opacity: 0.5;")
+            h3.mb-3.fw-bold(style="color: var(--text-primary);") まだ履歴がありません
+            p.text-muted.mb-4.fs-5 商品計算画面で商品を選択して保存すると、ここに履歴が表示されます
+            = link_to icon_calculate_products_path, class: "btn btn-primary btn-lg shadow-sm", style: "border-radius: 12px; padding: 12px 32px;" do
+              i.fas.fa-calculator.me-2
+              | 計算を始める
