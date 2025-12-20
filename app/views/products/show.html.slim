@@ -4,6 +4,9 @@
       h4.card-title.mb-0 = @product.name
     .card-body
       .row.g-3
+        - if @product.image.attached?
+          .col-12.text-center.mb-3
+            = image_tag @product.image, class: "img-fluid rounded", style: "max-width: 400px; max-height: 400px; object-fit: contain;"
         .col-md-6
           p.fs-4.fw-bold.mb-1 説明
           p.text-muted = @product.description.presence || "説明がありません。"

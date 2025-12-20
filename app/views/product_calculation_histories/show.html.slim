@@ -1,119 +1,128 @@
-h1.text-center.my-5 計算履歴詳細
-
-.container.mt-4
-  .row.mb-3
-    .col-12.d-flex.justify-content-between.align-items-center
-      h3.mb-0
-        i.fas.fa-file-invoice.me-2
-        = @history.title
-      .d-flex.gap-2
-        = link_to product_calculation_histories_path, class: "btn btn-outline-secondary" do
-          i.fas.fa-arrow-left.me-1
-          | 履歴一覧に戻る
-        = link_to icon_calculate_products_path, class: "btn btn-primary" do
-          i.fas.fa-calculator.me-1
-          | 商品計算に戻る
-
+.container.mt-4.mb-5
+  / ヘッダーセクション
   .row.mb-4
     .col-12
-      .card
-        .card-header.bg-primary.text-white
+      .card.border-0.shadow-sm
+        .card-body.p-4
+          .d-flex.justify-content-between.align-items-start.flex-wrap.gap-3
+            div.flex-grow-1
+              .d-flex.align-items-center.mb-2
+                i.fas.fa-file-invoice.fa-2x.me-3(style="opacity: 1.0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));")
+                div
+                  h1.mb-1.fw-bold= @history.title
+                  .d-flex.align-items-center
+                    i.fas.fa-clock.me-2
+                    span = @history.saved_at.strftime('%Y年%m月%d日 %H:%M')
+            .d-flex.gap-2.flex-wrap
+              = link_to product_calculation_histories_path, class: "btn btn-primary", style: "border-radius: 10px;" do
+                i.fas.fa-arrow-left.me-2
+                | 一覧に戻る
+              = link_to icon_calculate_products_path, class: "btn btn-outline-primary", style: "border-radius: 10px;" do
+                i.fas.fa-calculator.me-2
+                | 新規計算
+
+  / 商品リストセクション
+  .row.mb-4
+    .col-12
+      .card.border-0.shadow-sm(style="border-radius: 20px; overflow: hidden;")
+        .card-header.border-0.p-4(style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);")
           .d-flex.justify-content-between.align-items-center
-            span.fw-bold
-              i.fas.fa-info-circle.me-2
-              | 履歴情報
-            span.text-end
-              = @history.saved_at.strftime('%Y年%m月%d日 %H:%M')
-        .card-body
-          .row
-            .col-md-6
-              p.mb-2
-                strong タイトル:
-                = " #{@history.title}"
-            .col-md-6.text-md-end
-              p.mb-2
-                strong 保存日時:
-                = " #{@history.saved_at.strftime('%Y年%m月%d日 %H:%M')}"
-
-  .row.mb-4
-    .col-12
-      .card
-        .card-header.bg-light
-          .fw-bold
-            i.fas.fa-shopping-cart.me-2
-            | 選択した商品一覧
-            span.badge.bg-info.text-dark.ms-2
+            div
+              h4.mb-1.fw-bold(style="color: var(--text-primary);")
+                i.fas.fa-shopping-cart.me-2(style="color: var(--primary-color);")
+                | 選択した商品
+              p.text-muted.mb-0.small 商品の詳細と計算結果
+            span.badge.rounded-pill(style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); padding: 10px 20px; font-size: 1rem;")
               = @items.count
-              | 品目
+              |  品目
         .card-body.p-0
           / デスクトップ: テーブル表示
           .d-none.d-md-block
             .table-responsive
-              table.table.table-hover.align-middle.mb-0
-                thead.table-light
-                  tr
-                    th.text-center No.
-                    th 商品名
-                    th.text-center カテゴリ
-                    th.text-end 単価
-                    th.text-center 数量
-                    th.text-end 小計
+              table.table.align-middle.mb-0
+                thead(style="background: #f8f9fa;")
+                  tr(style="border: none;")
+                    th.text-center.py-3(style="color: var(--text-primary); font-weight: 600; border: none;") No.
+                    th.py-3(style="color: var(--text-primary); font-weight: 600; border: none;") 商品名
+                    th.text-center.py-3(style="color: var(--text-primary); font-weight: 600; border: none;") カテゴリ
+                    th.text-center.py-3(style="color: var(--text-primary); font-weight: 600; border: none;") 単価
+                    th.text-center.py-3(style="color: var(--text-primary); font-weight: 600; border: none;") 数量
+                    th.text-center.py-3(style="color: var(--text-primary); font-weight: 600; border: none;") 小計
                 tbody
                   - @items.each_with_index do |item, index|
-                    tr
-                      td.text-center.text-muted = index + 1
-                      td
-                        strong = item.product.name
-                      td.text-center
+                    tr(style="border-bottom: 1px solid #f0f0f0; transition: background 0.2s;" onmouseover="this.style.background='#f8f9fa';" onmouseout="this.style.background='transparent';")
+                      td.text-center.py-3
+                        .d-flex.align-items-center.justify-content-center
+                          .rounded-circle.d-flex.align-items-center.justify-content-center(style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; font-weight: 600; font-size: 0.85rem;")
+                            = index + 1
+                      td.py-3
+                        .d-flex.align-items-center
+                          - if item.product.image.attached?
+                            = image_tag item.product.image, class: "rounded me-3", style: "width: 48px; height: 48px; object-fit: cover;"
+                          - else
+                            .rounded.me-3.d-flex.align-items-center.justify-content-center(style="width: 48px; height: 48px; background: #e9ecef;")
+                              i.fas.fa-image.text-muted
+                          strong(style="color: var(--text-primary);") = item.product.name
+                      td.text-center.py-3
                         - if item.product.category
-                          span.badge.bg-secondary = item.product.category.name
+                          span.badge.rounded-pill(style="background: #e3f2fd; color: #1976d2; padding: 6px 14px; font-weight: 500;") = item.product.category.name
                         - else
-                          span.badge.bg-light.text-dark 未分類
-                      td.text-end = number_to_currency(item.price, unit: "¥", precision: 0)
-                      td.text-center
-                        span.badge.bg-primary = item.quantity
-                      td.text-end.fw-bold.text-success = number_to_currency(item.subtotal, unit: "¥", precision: 0)
-          
+                          span.badge.rounded-pill(style="background: #f5f5f5; color: #757575; padding: 6px 14px; font-weight: 500;") 未分類
+                      td.text-center.py-3(style="color: var(--text-primary); font-weight: 500;") = number_to_currency(item.price, unit: "¥", precision: 0)
+                      td.text-center.py-3
+                        span.badge.rounded-pill(style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 8px 16px; font-weight: 500;") = item.quantity
+                      td.text-center.py-3.fw-bold(style="color: #00897b; font-size: 1.1rem;") = number_to_currency(item.subtotal, unit: "¥", precision: 0)
+
           / モバイル: カードリスト表示
-          .d-md-none
-            .list-group.list-group-flush
-              - @items.each_with_index do |item, index|
-                .list-group-item
-                  .d-flex.w-100.justify-content-between.align-items-start.mb-2
-                    .fw-bold
-                      span.badge.bg-secondary.me-2 = index + 1
-                      = item.product.name
-                    - if item.product.category
-                      span.badge.bg-secondary = item.product.category.name
-                    - else
-                      span.badge.bg-light.text-dark 未分類
-                  .d-flex.justify-content-between.align-items-center
-                    .text-muted.small
-                      | 単価: 
-                      = number_to_currency(item.price, unit: "¥", precision: 0)
-                    .text-muted.small
-                      | 数量: 
-                      span.badge.bg-primary = item.quantity
-                  .text-end.fw-bold.text-success.mt-1
-                    | 小計: 
-                    = number_to_currency(item.subtotal, unit: "¥", precision: 0)
+          .d-md-none.p-3
+            - @items.each_with_index do |item, index|
+              .card.border-0.mb-3(style="border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);")
+                .card-body.p-3
+                  .d-flex.align-items-start.mb-3
+                    .rounded-circle.d-flex.align-items-center.justify-content-center.me-3(style="width: 36px; height: 36px; min-width: 36px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; font-weight: 600;")
+                      = index + 1
+                    div.flex-grow-1
+                      .d-flex.justify-content-between.align-items-start.mb-2
+                        div.flex-grow-1
+                          - if item.product.image.attached?
+                            = image_tag item.product.image, class: "rounded mb-2", style: "width: 100%; max-width: 120px; height: 80px; object-fit: cover;"
+                          h6.mb-1.fw-bold(style="color: var(--text-primary);") = item.product.name
+                        - if item.product.category
+                          span.badge.rounded-pill.ms-2(style="background: #e3f2fd; color: #1976d2; padding: 6px 12px; font-weight: 500;") = item.product.category.name
+                  .row.g-2.mb-2
+                    .col-6
+                      .text-muted.small.mb-1 単価
+                      .fw-500(style="color: var(--text-primary);") = number_to_currency(item.price, unit: "¥", precision: 0)
+                    .col-6
+                      .text-muted.small.mb-1 数量
+                      span.badge.rounded-pill(style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 6px 14px;") = item.quantity
+                  .pt-2.mt-2(style="border-top: 1px solid #f0f0f0;")
+                    .d-flex.justify-content-between.align-items-center
+                      span.text-muted 小計
+                      span.fw-bold.fs-5(style="color: #00897b;") = number_to_currency(item.subtotal, unit: "¥", precision: 0)
 
   .row
     .col-12
-      .card.border-success
-        .card-header.bg-success.text-white
-          .d-flex.justify-content-between.align-items-center
-            span.fw-bold
-              i.fas.fa-calculator.me-2
-              | 合計金額
-            span.fs-4.fw-bold
-              = number_to_currency(@history.total_amount, unit: "¥", precision: 0)
+      .card.border-0.shadow-sm(style="border-radius: 20px; background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); overflow: hidden;")
+        .card-body.p-4
+          .d-flex.justify-content-between.align-items-center.flex-wrap.gap-3
+            div
+              .d-flex.align-items-center.mb-2
+                .rounded-circle.d-flex.align-items-center.justify-content-center.me-3(style="width: 56px; height: 56px; background: rgba(0, 137, 123, 0.15);")
+                  i.fas.fa-calculator.fa-2x(style="color: #00897b;")
+                div
+                  h5.mb-1.fw-bold(style="color: #00695c;") 合計金額
+                  p.mb-0.text-muted.small 全商品の総計
+            div.text-end
+              .display-4.fw-bold(style="color: #00897b;")
+                = number_to_currency(@history.total_amount, unit: "¥", precision: 0)
 
   .row.mt-4
-    .col-12.d-flex.justify-content-between
-      = button_to product_calculation_history_path(@history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-danger" do
-        i.fas.fa-trash.me-1
-        | この履歴を削除
-      = link_to product_calculation_histories_path, class: "btn btn-outline-secondary" do
-        i.fas.fa-list.me-1
-        | 履歴一覧へ
+    .col-12
+      .d-flex.justify-content-between.align-items-center.flex-wrap.gap-3
+        = button_to product_calculation_history_path(@history), method: :delete, data: { confirm: '本当に削除しますか？' }, class: "btn btn-outline-danger btn-lg", style: "border-radius: 12px; padding: 12px 32px;" do
+          i.fas.fa-trash-alt.me-2
+          | この履歴を削除
+        = link_to product_calculation_histories_path, class: "btn btn-outline-secondary btn-lg", style: "border-radius: 12px; padding: 12px 32px;" do
+          i.fas.fa-list.me-2
+          | 履歴一覧へ
