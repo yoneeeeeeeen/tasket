@@ -81,15 +81,15 @@ class ProductsController < ApplicationController
   end
 
   def update
-    # セキュリティのため、company_idが変更されないようにする
-    product_update_params = product_params.except(:company_id)
-    
+    # セキュリティのため、company_idが変更されないようにするが、imageは許可する
+    allowed_params = params.require(:product).permit(:name, :description, :price, :stock_quantity, :category_id, :image)
+
     # 商品の企業IDが空の場合、更新者の企業IDを設定
     if @product.company_id.blank? && current_user.company_id.present?
       @product.company_id = current_user.company_id
     end
-    
-    if @product.update(product_update_params)
+
+    if @product.update(allowed_params)
       respond_to do |format|
         format.turbo_stream {
           render turbo_stream: [
@@ -245,7 +245,7 @@ class ProductsController < ApplicationController
   end
 
   def product_params
-    params.require(:product).permit(:name, :description, :price, :stock_quantity, :category_id, :company_id)
+    params.require(:product).permit(:name, :description, :price, :stock_quantity, :category_id, :company_id, :image)
   end
 
   def generate_csv(products)
@@ -264,7 +264,7 @@ class ProductsController < ApplicationController
         ]
       end
     end
-    
+
     # UTF-8 BOMを追加してExcelで正しく表示されるようにする
     "\uFEFF" + csv_data
   end
